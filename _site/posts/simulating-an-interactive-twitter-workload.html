@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — Simulating an interactive Twitter workload</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Simulating an interactive Twitter workload">
+        <meta name="twitter:description" content="My latest project has led me to try to simulate workloads from real-world social networks. Starting from Graph500's Kronecker graph and integrating with Retwis, with a sprinkle of my own retweet behavior, I came up with something that works for me that I thought I'd share.
+">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>Simulating an interactive Twitter workload <small></small></h1>
+
+<p class="text-muted">18 Feb 2015</p>
+
+<div class="post">
+<p>This week I submitted some early work on mitigating contention on hot keys in key/value stores to a workshop co-located with EuroSys. In order to better motivate the work, I wanted to recreate scenarios from real life that lead to lots of contention on a few keys. In particular, what is most interesting for my work is cases where a lot of clients are all attempting to read and update the same key at once. One place where this happens organically is when something, such as a tweet, &quot;goes <em>viral</em>&quot; and is suddenly being seen, commented on, and re-shared by millions of people. This web phenomenon causes all kinds of problems for designers and maintainers of social networks or really anything on the internet. Though Twitter&#39;s <a href="http://www.whatisfailwhale.info/">failwhale</a> has been retired for a couple years now, and Twitter can now withstand high tweet volumes, even the spikes that follow a #WorldCup goal or Katy Perry&#39;s SuperBowl shark, some situations can still slow it to a crawl, like Ellen DeGeneres&#39;s 2014 Oscar selfie.</p>
+
+<p>It turned out that just with an existing graph generator and a simple model of user behavior, I was able to recreate some of this viral retweeting behavior in my simulated workload to put my system to the test.</p>
+
+<p>I started with an application based on <a href="http://redis.io/topics/twitter-clone">Retwis</a>, which is a Twitter clone which serves as an example of how to use <a href="http://redis.io">Redis</a>, a popular key-value store. But to get a workload that taxes this application in a realistic way, I had to build a realistic graph, and come up with the operations, such as tweeting and following, that matched what Twitter sees every day.</p>
+
+<h2 id="followers-following-power-law">Followers following power law</h2>
+
+<p>Natural graphs, in particular social network graphs, follow particular patterns. They tend to be low-diameter (the &quot;six degrees of Kevin Bacon&quot; property), and the degree distribution follows a power law: most people have a handful of friends or followers (in my case, on the order of 0), while a handful of people (Katy Perry, Justin Bieber, Barack Obama) have many millions of followers. We know how to reproduce graphs with this same degree distribution with a class of synthetic graphs known as <a href="http://cs.stanford.edu/people/jure/pubs/kronecker-jmlr10.pdf">Kronecker graphs</a>. These graphs at least model the degree distribution, and low diameter correctly, though they may not model other properties, such as communities, quite as well.</p>
+
+<p>Using the Kronecker graph generator from the <a href="http://graph500.org">Graph500 benchmark</a> (a simplistic benchmark designed to test the graph analytics performance of supercomputers), it was easy to create a graph of users that follow each other in a way that matches real networks:</p>
+
+<div class="highlight"><pre><code class="language-r, include=F" data-lang="r, include=F">DATA.MODE &lt;- 'local'
+source('common.R')
+
+df.histogram &lt;- function(json, version="none") {
+  d &lt;- fromJSON(json)
+  return(data.frame(x=num(names(d)), y=num(unlist(d)), version=version))
+}
+df &lt;- claret_data("name like '%v0.14%' and nclients = 32 and initusers = 4096")
+df$grp &lt;- with(df, sprintf("%s\n%s\nmix:%s/%s,\n%s", name, ccmode, mix, alpha, gen))
+
+histogram.facets &lt;- function(df, measure, grp) {
+  d &lt;- data.frame(x=c(),y=c(),version=c())
+  for (i in 1:nrow(df)) {
+    d &lt;- rbind(d, df.histogram(df[i,measure], df[i,grp]))
+  }
+  return(d)
+}
+</code></pre></div><div class="highlight"><pre><code class="language-r followers" data-lang="r followers">d.follow &lt;- histogram.facets(subset(df,
+    initusers == 4096 &amp; mix == 'geom_repost'
+), 'stat_follower_counts', 'grp')
+ggplot(d.follow, aes(x=x, weight=y))+
+    stat_ecdf(color=c.blue)+
+    xlab('# followers / user (log scale)')+ylab('CDF (log scale)')+
+    scale_x_log10(breaks=c(1,10,100,1000))+scale_y_log10(breaks=c(0.1,0.5,1.0))+
+    theme_mine
+</code></pre></div>
+
+<p>The plot above shows the distribution of the number of followers each user has in my synthetic graph with roughly 4000 users. It&#39;s plotted as a cumulative distribution function (CDF). On a log-log plot (both axes on logarithmic scales), a power-law distribution should look like a straight line, which it mostly does here. The way to read this is that 50% of the users have less than 100 followers, while a few users have nearly 2000, or half the network, following them.</p>
+
+<h2 id="retweeting-behavior">Retweeting behavior</h2>
+
+<p>To come up with a Twitter-like workload for this key-value store, I started by just having clients randomly choose between a few operations with some probability.</p>
+
+<ul>
+<li>Read the most recent tweets on their timeline <em>(75% chance)</em></li>
+<li>Post a new tweet <em>(15% chance)</em></li>
+<li>Follow another user <em>(5% chance)</em></li>
+<li>Unfollow someone they&#39;re already following <em>(3% chance)</em></li>
+<li>Create a new user <em>(2% chance)</em></li>
+</ul>
+
+<p>With the exception of &quot;new user&quot;, the user (or users) in question are chosen uniformly randomly.</p>
+
+<p>I added to this the ability to retweet a post, that is, to share a post on your timeline with all of your followers. You can&#39;t retweet something you haven&#39;t seen, though, so this retweeting behavior, rather than independently sampling from posts, is linked to the &quot;read timeline&quot; action. When a client reads a users&#39;s timeline, they then have some probability of retweeting some of the tweets. I do this by randomly choosing a number to retweet using a geometric distribution, which will be skewed toward 0, so most will not result in any retweets, but approximately 20% will have at least 1 retweet, and some may retweet as many as 8 from one timeline load.</p>
+
+<p>In reality, tweets can go viral for a variety of reasons related to their content or their timeliness, or their use of hashtags, or whatever. The content of my simulated tweets is just random garbage (actually, it&#39;s <a href="http://hipsum.co/">Hipster Ipsum</a>), so obviously the content can&#39;t affect it. Instead, I approximate the desired behavior by ranking tweets by the number of times they have been retweeted and retweeting those first.</p>
+
+<!-- When you're retweeting, however, you aren't creating a new post. Somewhere, we have to keep track of who has retweeted a given tweet, in order to prevent multiple retweets of the same tweet by the same user, and to show users the count of how many times it has been retweeted and let them expand a list of who has retweeted it. -->
+
+<p>The result is retweeting behavior that again fits a power law, as we can see below in another log-log CDF plot, this time of the number of times each post has been re-posted.</p>
+
+<div class="highlight"><pre><code class="language-r reposts" data-lang="r reposts">d.repost &lt;- histogram.facets(
+    subset(df, initusers == 4096 &amp; mix == 'geom_repost')
+, 'stat_repost_counts', 'grp')
+ggplot(d.repost, aes(x=x, weight=y))+
+    stat_ecdf(color=c.blue)+
+    xlab('# reposts')+ylab('count')+
+    scale_x_log10(breaks=c(1,10,100,1000))+
+    scale_y_log10(breaks=c(0.1,0.2,0.4,0.6,0.8,1.0))+
+    xlab('# reposts (log scale)')+ylab('CDF (log scale)')+
+    theme_mine
+</code></pre></div>
+
+<p>Again, we can see it roughly follows a straight line, and again, most tweets are retweeted few times (40% less than 10 reposts), while a few are retweeted over 1000 times, so they are likely seen by a large fraction of the social network. This retweeting distribution matches some studies that have been done of Twitter.</p>
+
+<p>I just thought it was cool that simply having the power-law degree distribution and retweeting the more popular tweets led to this complex behavior. It also, conveniently, worked in the favor of my modified key-value store which leverages commutativity to avoid falling over under these high-contention situations. I&#39;ll post soon in more detail about this work, but just to give a taste of it, here is a graph of the throughput as we increase the number of clients (and therefore the amount of contention), on a baseline system (&quot;reader/writer&quot;) and my modified version (&quot;commutative&quot;):</p>
+
+<div class="highlight"><pre><code class="language-r throughput" data-lang="r throughput">require(scales)
+d &lt;- claret_data("name LIKE 'claret-v0.14%'")
+d.u &lt;- subset(d, nshards == 4 &amp; initusers == 4096 
+                &amp; grepl('geom_repost', mix))
+ggplot(d.u, aes(x=nclients, y=throughput/1000, 
+        group=cc, fill=cc, color=cc, linetype=cc))+
+    stat_summary(fun.y=mean, geom="line", size=0.4)+
+    xlab('Concurrent clients')+ylab('Throughput (k trans. / sec)')+
+    expand_limits(y=0)+
+    theme_mine+
+    scale_x_continuous(trans=log2_trans(), breaks=c(4,8,16,32,64))+
+    theme(legend.position='right', legend.direction='vertical', legend.title.align=0)+
+    cc_scales(title='Concurrency\ncontrol:')
+</code></pre></div>
+
+<p>Thanks, see you in the next exciting update on this project.</p>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — LLVM Debugging Tips and Tricks</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="LLVM Debugging Tips and Tricks">
+        <meta name="twitter:description" content="LLVM is a fantastic tool for anyone interested in developing languages, optimizing their code, or even developing first-order architectural simulations. Part of what makes it so great is the wealth of great tools that come with it to help develop and debug passes. Unfortunately not all of them are very well-documented and many are not widely known. In this post I'll describe a few that I stumbled upon which may prove useful — things like printing all the basicblocks/instructions of a function, or inspecting successor/predecessor chains from the debugger (lldb).
+">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>LLVM Debugging Tips and Tricks <small></small></h1>
+
+<p class="text-muted">03 Aug 2015</p>
+
+<div class="post">
+<p>Back when I was working heavily with LLVM, I learned a bunch of little tricks that made my life so much easier. I meant to document them back when they were fresh in my mind, but didn&#39;t get around to it. Now recently I&#39;ve been chatting with several colleagues at UW that are just getting started with LLVM, and thought I&#39;d go back and put together a couple of the useful tricks I learned.</p>
+
+<p>This also follows on the heels of Adrian&#39;s <a href="http://adriansampson.net/blog/llvm.html">fantastic post</a> on how to get up and running using LLVM for research (which I highly recommend to anyone who ever needs to <em>&quot;do stuff with programs&quot;</em>). Adrian covers all the basics of why LLVM, how to get started, and what some basic passes could look like. The tricks I&#39;ll lay out here have more to do with day-to-day debugging tasks.</p>
+
+<h2 id="debugging-with-lldb">Debugging with LLDB</h2>
+
+<p>Imagine we want to poke around with something in the middle of our custom pass, to inspect how the data structures look, or chase down some bug. LLDB (LLVM&#39;s version of GDB) is a fantastic tool for playing with live code. It uses LLVM&#39;s formidable JIT tooling to interpret and run arbitrary code you give it (much more robustly than GDB ever has for me). This is extremely powerful especially as you&#39;re learning the ins and outs of LLVM&#39;s massive codebase.</p>
+
+<p>There&#39;s just a couple little tricks to getting LLDB to work nicely for us. First, we need to build with Debug symbols. The best way to do this is to tell CMake to enable Debug symbols. Because CMake is CMake, you need to actually blow away your existing <code>build/</code> directory and re-configure to change this, this time adding the option <code>-DCMAKE_BUILD_TYPE=Debug</code>:</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">$ cmake .. -DCMAKE_BUILD_TYPE=Debug
+</code></pre></div>
+<blockquote>
+<p><strong>Aside:</strong> If you&#39;re worried about performance, you could instead use <code>RelWithDebInfo</code> — this is the setting I recommend for building the rest of LLVM because otherwise it&#39;s painfully slow — but for my own code I build with <code>Debug</code> while developing.</p>
+</blockquote>
+
+<p>Let&#39;s say we want to play around with the FunctionPass from before and find out more about how Functions are structured. So we want to run our pass with LLDB and set a breakpoint in our code, let&#39;s say at line 20, inside our loop over basic blocks.</p>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="c1">// In file: Skeleton.cpp
+</span><span class="k">virtual</span> <span class="n">bool</span> <span class="nf">runOnFunction</span><span class="p">(</span><span class="n">Function</span><span class="o">&amp;</span> <span class="n">fn</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">errs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"In function "</span> <span class="o">&lt;&lt;</span> <span class="n">fn</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="n">bb</span> <span class="o">:</span> <span class="n">fn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">errs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"Basic block:</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="c1">// &lt;- line 20
+</span>    <span class="n">bb</span><span class="p">.</span><span class="n">dump</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>First, we need to find out how to launch Clang with the LLDB debugger. It turns out <code>clang</code> is actually just a driver which figures out how to launch the correct subprocess to do your compile for you. We can see the commands it invokes using <code>clang -v</code>:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">$ clang -v -Xclang -load -Xclang skeleton/libSkeletonPass.so ~/scratch/test.c
+clang version 3.6.0
+Target: x86_64-apple-darwin14.4.0
+Thread model: posix
+ "/opt/llvm-head/release/bin/clang-3.6" -cc1 -triple x86_64-apple-macosx10.10.0 -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -main-file-name test.c -mrelocation-model pic -pic-level 2 -mdisable-fp-elim -masm-verbose -munwind-tables -target-cpu core2 -v -dwarf-column-info -resource-dir /opt/llvm-head/release/bin/../lib/clang/3.6.0 -fdebug-compilation-dir /Users/bholt/hub/llvm-pass-skeleton/build -ferror-limit 19 -fmessage-length 125 -stack-protector 1 -mstackrealign -fblocks -fobjc-runtime=macosx-10.10.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -fcolor-diagnostics -load skeleton/libSkeletonPass.so -o /var/folders/w6/pf2p4_tx1097_3gc9_dl3yr00009sq/T/test-1c7442.o -x c test.c
+ ...
+</code></pre></div>
+<p>So, now that we know the command (<code>clang-3.6 -cc1 ...</code>), we can run that with LLDB, then we want to set a breakpoint in Skeleton.cpp, line 17 and then we can run the program:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">$ lldb -- "/opt/llvm-head/release/bin/clang-3.6" -cc1 -triple x86_64-apple-macosx10.10.0 -emit-obj -mrelax-all -disable-free -disable-llvm-verifier -main-file-name test.c -mrelocation-model pic -pic-level 2 -mdisable-fp-elim -masm-verbose -munwind-tables -target-cpu core2 -v -dwarf-column-info -resource-dir /opt/llvm-head/release/bin/../lib/clang/3.6.0 -fdebug-compilation-dir /Users/bholt/hub/llvm-pass-skeleton/build -ferror-limit 19 -fmessage-length 125 -stack-protector 1 -mstackrealign -fblocks -fobjc-runtime=macosx-10.10.0 -fencode-extended-block-signature -fmax-type-align=16 -fdiagnostics-show-option -fcolor-diagnostics -load skeleton/libSkeletonPass.so -o /var/folders/w6/pf2p4_tx1097_3gc9_dl3yr00009sq/T/test-1c7442.o -x c test.c
+(lldb) breakpoint set -f Skeleton.cpp -l 20
+Breakpoint 1: no locations (pending).
+WARNING:  Unable to resolve breakpoint to any actual locations.
+(lldb) run
+Process 79186 launched: '/opt/llvm-head/release/bin/clang-3.6' (x86_64)
+1 location added to breakpoint 1
+clang -cc1 version 3.6.0 based upon LLVM 3.6.0svn default target x86_64-apple-darwin14.4.0
+#include "..." search starts here:
+#include &lt;...&gt; search starts here:
+ /usr/local/include
+ /opt/llvm-head/release/bin/../lib/clang/3.6.0/include
+ /usr/include
+ /System/Library/Frameworks (framework directory)
+ /Library/Frameworks (framework directory)
+End of search list.
+Process 79186 stopped
+* thread #1: tid = 0x11d9b7, 0x00000001030e18d5 libSkeletonPass.so`(anonymous namespace)::SkeletonPass::runOnFunction(this=0x0000000103204a20, fn=0x0000000103501880) + 181 at Skeleton.cpp:20, queue = 'com.apple.main-thread', stop reason = step over
+    frame #0: 0x00000001030e18d5 libSkeletonPass.so`(anonymous namespace)::SkeletonPass::runOnFunction(this=0x0000000103204a20, fn=0x0000000103501880) + 181 at Skeleton.cpp:20
+   17         errs() &lt;&lt; "In function " &lt;&lt; fn.getName() &lt;&lt; "\n";
+   18
+   19         for (auto&amp; bb : fn) {
+-&gt; 20           errs() &lt;&lt; "Basic block:\n";
+   21           bb.dump();
+   22         }
+   23
+(lldb)
+</code></pre></div>
+<p>Notice how at first, it didn&#39;t know what were talking about with <code>Skeleton.cpp</code> since that module is dynamically loaded by clang later. However, as soon as it was loaded, lldb obediently set the breakpoint we asked for!</p>
+
+<p>Almost everything in LLVM has a <code>dump()</code> method — definitely anything descending from <code>Value</code>, which includes <code>Instruction</code>, <code>BasicBlock</code>, <code>Function</code>, and even metadata (<code>MDNode</code>). This is <em>super</em> handy to use in your passes to find out what&#39;s going on. </p>
+
+<blockquote>
+<p><strong>Protip:</strong> LLVM&#39;s C++ magic allows you to use the <code>&lt;&lt;</code> operator with anything that has this <code>dump</code> method, so we could have just as easily written <code>errs() &lt;&lt; &quot;Basic block:\n&quot; &lt;&lt; bb &lt;&lt; &quot;\n&quot;;</code> above. However, in the debugger, we use <code>dump()</code> to print to the console.</p>
+</blockquote>
+
+<p>Now we can poke around a bit with LLVM. In <code>lldb</code>, <code>e</code> or <code>p</code> (for GDB compatibility) are just shortcuts for &quot;evaluate expression&quot;.</p>
+<div class="highlight"><pre><code class="language-llvm" data-lang="llvm"><span class="p">(</span><span class="err">lldb</span><span class="p">)</span> <span class="err">e</span> <span class="err">bb</span><span class="p">.</span><span class="err">dump</span><span class="p">()</span>
+
+<span class="nv">%1</span> <span class="p">=</span> <span class="k">call</span> <span class="kt">i32</span> <span class="p">(</span><span class="kt">i8</span><span class="p">*,</span> <span class="p">...)*</span> <span class="vg">@printf</span><span class="p">(</span><span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">14</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">))</span>
+<span class="k">ret</span> <span class="kt">void</span>
+
+<span class="p">(</span><span class="err">lldb</span><span class="p">)</span> <span class="err">e</span> <span class="err">fn</span><span class="p">.</span><span class="err">dump</span><span class="p">()</span>
+
+<span class="c1">; Function Attrs: nounwind ssp uwtable</span>
+<span class="k">define</span> <span class="kt">void</span> <span class="vg">@hello</span><span class="p">()</span> <span class="err">#</span><span class="m">0</span> <span class="p">{</span>
+  <span class="nv">%1</span> <span class="p">=</span> <span class="k">call</span> <span class="kt">i32</span> <span class="p">(</span><span class="kt">i8</span><span class="p">*,</span> <span class="p">...)*</span> <span class="vg">@printf</span><span class="p">(</span><span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">14</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">))</span>
+  <span class="k">ret</span> <span class="kt">void</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Because <code>lldb</code> leverages LLVM&#39;s own awesome parsing and JIT&#39;ing functionality, it&#39;s possible to do all kinds of exploratory computation from the <code>lldb</code> prompt. The only real limitation is that you must have <code>#include</code>&#39;d the headers for things you wish to work with, otherwise it probably won&#39;t have the full definition of the classes.</p>
+
+<h2 id="viewing-graphs">Viewing graphs</h2>
+
+<p>Another handy tool LLVM provides is automatic DOT graph generation for various objects. For instance, you can print the complete control-flow-graph (CFG) for a function with <code>Function::viewCFG()</code>. This is explained more in the programmer&#39;s manual, specifically <a href="http://llvm.org/docs/ProgrammersManual.html#viewing-graphs-while-debugging-code">here</a>.</p>
+
+<p>I have it on good authority (thanks <a href="http://homes.cs.washington.edu/%7Emoreau/">Thierry</a>!) that on OSX, if you use <a href="http://brew.sh/">Homebrew</a>, you can just do <code>brew install graphviz</code> and that should install the necessary libraries and tools for LLVM to do its thing.</p>
+
+<p>This works particularly well from within LLDB:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">(lldb) fn.viewCFG()
+Writing '/var/folders/w6/pf2p4_tx1097_3gc9_dl3yr00009sq/T/cfghello-6a63ec.dot'...  done.
+Running '/usr/local/bin/dot' program...  done.
+</code></pre></div>
+<p><img src="/~bholt/img/llvm-viewcfg.png" alt="Function::viewCFG()" class="img-responsive img-rounded" /></p>
+
+<p>As with everything else in LLVM, the DOT graph printer is built to be extended, so you can define custom graphs for debugging your passes, or for visualizing the output of your tool. A good place to start looking is in the documentation for <a href="http://llvm.org/docs/doxygen/html/structllvm_1_1DefaultDOTGraphTraits.html">DefaultDOTGraphTraits</a>.</p>
+
+<h2 id="getting-source-line-info-for-instructions">Getting source/line info for instructions</h2>
+
+<p>Many times when working with LLVM IR, I&#39;ve wanted to be able to map instructions back to the source code they came from. There are just a couple gotchas with mapping instructions back to their original source code file and line number, so I thought I&#39;d spend a few sentences explaining them.</p>
+
+<p>First, you need another header (this is it&#39;s location in my version of LLVM, but they seem to change these paths fairly often so YMMV):</p>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="cp">#include &lt;llvm/IR/DebugInfo.h&gt;
+</span></code></pre></div>
+<p>Then you just need to get the metadata for the instruction and extract the location information:</p>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="n">Instruction</span> <span class="o">*</span><span class="n">inst</span> <span class="o">=</span> <span class="p">...;</span>
+<span class="n">MDNode</span> <span class="o">*</span><span class="n">md</span> <span class="o">=</span> <span class="n">inst</span><span class="o">-&gt;</span><span class="n">getMetadata</span><span class="p">(</span><span class="s">"dbg"</span><span class="p">);</span>
+<span class="n">DILocation</span> <span class="n">loc</span><span class="p">(</span><span class="n">md</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">line</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">getLineNumber</span><span class="p">();</span>
+<span class="n">StringRef</span> <span class="n">file</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">getFilename</span><span class="p">();</span>
+<span class="n">StringRef</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">getDirectory</span><span class="p">();</span>
+<span class="n">errs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">inst</span> <span class="o">&lt;&lt;</span>  <span class="s">" ; file: "</span> <span class="o">&lt;&lt;</span> <span class="n">file</span> <span class="o">&lt;&lt;</span> <span class="s">", line: "</span> <span class="o">&lt;&lt;</span> <span class="n">line</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+</code></pre></div>
+<p>If you go ahead and try this, odds are good your first run will look something like this:</p>
+<div class="highlight"><pre><code class="language-llvm" data-lang="llvm"><span class="err">$</span> <span class="k">c</span><span class="err">lang</span> <span class="err">-X</span><span class="k">c</span><span class="err">lang</span> <span class="err">-</span><span class="k">load</span> <span class="err">-X</span><span class="k">c</span><span class="err">lang</span> <span class="err">skele</span><span class="k">to</span><span class="err">n/libSkele</span><span class="k">to</span><span class="err">nPass</span><span class="p">.</span><span class="err">so</span> <span class="err">~/s</span><span class="k">c</span><span class="err">rat</span><span class="k">c</span><span class="err">h/test</span><span class="p">.</span><span class="k">c</span>
+<span class="nl">Function:</span> <span class="err">main</span>
+<span class="err">Basi</span><span class="k">c</span> <span class="nl">block:</span>
+  <span class="nv">%1</span> <span class="p">=</span> <span class="k">alloca</span> <span class="kt">i32</span><span class="p">,</span> <span class="k">align</span> <span class="m">4</span> <span class="c1">; file: , line: 0</span>
+  <span class="nv">%2</span> <span class="p">=</span> <span class="k">alloca</span> <span class="kt">i32</span><span class="p">,</span> <span class="k">align</span> <span class="m">4</span> <span class="c1">; file: , line: 0</span>
+  <span class="nv">%3</span> <span class="p">=</span> <span class="k">alloca</span> <span class="kt">i8</span><span class="p">**,</span> <span class="k">align</span> <span class="m">8</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">store</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span><span class="p">*</span> <span class="nv">%1</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">store</span> <span class="kt">i32</span> <span class="nv">%argc</span><span class="p">,</span> <span class="kt">i32</span><span class="p">*</span> <span class="nv">%2</span><span class="p">,</span> <span class="k">align</span> <span class="m">4</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">store</span> <span class="kt">i8</span><span class="p">**</span> <span class="nv">%argv</span><span class="p">,</span> <span class="kt">i8</span><span class="p">***</span> <span class="nv">%3</span><span class="p">,</span> <span class="k">align</span> <span class="m">8</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">call</span> <span class="kt">void</span> <span class="vg">@hello</span><span class="p">()</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">ret</span> <span class="kt">i32</span> <span class="m">0</span> <span class="c1">; file: , line: 0</span>
+</code></pre></div>
+<p>The <strong>big gotcha</strong> with source code info is that you <em>need to instruct Clang/LLVM to generate this metadata</em>, which it only does if you&#39;ve specified that you want &quot;debug symbols&quot; or &quot;debug info&quot; by passing the <code>-g</code> flag (if you&#39;re not already in the habit of just always passing this flag to gcc/clang, now&#39;s the time to start).</p>
+<div class="highlight"><pre><code class="language-llvm" data-lang="llvm"><span class="err">$</span> <span class="k">c</span><span class="err">lang</span> <span class="err">-g</span> <span class="err">-X</span><span class="k">c</span><span class="err">lang</span> <span class="err">-</span><span class="k">load</span> <span class="err">-X</span><span class="k">c</span><span class="err">lang</span> <span class="err">skele</span><span class="k">to</span><span class="err">n/libSkele</span><span class="k">to</span><span class="err">nPass</span><span class="p">.</span><span class="err">so</span> <span class="err">~/s</span><span class="k">c</span><span class="err">rat</span><span class="k">c</span><span class="err">h/test</span><span class="p">.</span><span class="k">c</span>
+<span class="nl">Function:</span> <span class="err">hello</span>
+<span class="err">Basi</span><span class="k">c</span> <span class="nl">block:</span>
+  <span class="nv">%1</span> <span class="p">=</span> <span class="k">call</span> <span class="kt">i32</span> <span class="p">(</span><span class="kt">i8</span><span class="p">*,</span> <span class="p">...)*</span> <span class="vg">@printf</span><span class="p">(</span><span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">14</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">)),</span> <span class="nv">!dbg</span> <span class="nv">!18</span> <span class="c1">; file: test.c, line: 4</span>
+  <span class="k">ret</span> <span class="kt">void</span><span class="p">,</span> <span class="nv">!dbg</span> <span class="nv">!19</span> <span class="c1">; file: test.c, line: 5</span>
+  <span class="k">ret</span> <span class="kt">void</span><span class="p">,</span> <span class="nv">!dbg</span> <span class="nv">!19</span>
+<span class="nl">Function:</span> <span class="err">main</span>
+<span class="err">Basi</span><span class="k">c</span> <span class="nl">block:</span>
+  <span class="nv">%1</span> <span class="p">=</span> <span class="k">alloca</span> <span class="kt">i32</span><span class="p">,</span> <span class="k">align</span> <span class="m">4</span> <span class="c1">; file: , line: 0</span>
+  <span class="nv">%2</span> <span class="p">=</span> <span class="k">alloca</span> <span class="kt">i32</span><span class="p">,</span> <span class="k">align</span> <span class="m">4</span> <span class="c1">; file: , line: 0</span>
+  <span class="nv">%3</span> <span class="p">=</span> <span class="k">alloca</span> <span class="kt">i8</span><span class="p">**,</span> <span class="k">align</span> <span class="m">8</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">store</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span><span class="p">*</span> <span class="nv">%1</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">store</span> <span class="kt">i32</span> <span class="nv">%argc</span><span class="p">,</span> <span class="kt">i32</span><span class="p">*</span> <span class="nv">%2</span><span class="p">,</span> <span class="k">align</span> <span class="m">4</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">call</span> <span class="kt">void</span> <span class="vg">@llvm.dbg.declare</span><span class="p">(</span><span class="kt">metadata</span> <span class="p">!{</span><span class="kt">i32</span><span class="p">*</span> <span class="nv">%2</span><span class="p">},</span> <span class="kt">metadata</span> <span class="nv">!18</span><span class="p">,</span> <span class="kt">metadata</span> <span class="nv">!19</span><span class="p">),</span> <span class="nv">!dbg</span> <span class="nv">!20</span> <span class="c1">; file: test.c, line: 7</span>
+  <span class="k">store</span> <span class="kt">i8</span><span class="p">**</span> <span class="nv">%argv</span><span class="p">,</span> <span class="kt">i8</span><span class="p">***</span> <span class="nv">%3</span><span class="p">,</span> <span class="k">align</span> <span class="m">8</span> <span class="c1">; file: , line: 0</span>
+  <span class="k">call</span> <span class="kt">void</span> <span class="vg">@llvm.dbg.declare</span><span class="p">(</span><span class="kt">metadata</span> <span class="p">!{</span><span class="kt">i8</span><span class="p">***</span> <span class="nv">%3</span><span class="p">},</span> <span class="kt">metadata</span> <span class="nv">!21</span><span class="p">,</span> <span class="kt">metadata</span> <span class="nv">!19</span><span class="p">),</span> <span class="nv">!dbg</span> <span class="nv">!22</span> <span class="c1">; file: test.c, line: 7</span>
+  <span class="k">call</span> <span class="kt">void</span> <span class="vg">@hello</span><span class="p">(),</span> <span class="nv">!dbg</span> <span class="nv">!23</span> <span class="c1">; file: test.c, line: 9</span>
+  <span class="k">ret</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="nv">!dbg</span> <span class="nv">!24</span> <span class="c1">; file: test.c, line: 11</span>
+  <span class="k">ret</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="nv">!dbg</span> <span class="nv">!24</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Even after running with <code>-g</code>, some instructions <em>still won&#39;t have source location metdata</em>. That&#39;s because they don&#39;t meaningfully correspond to a line number. This is true for the <code>alloca</code> instructions inserted by the compiler for stack variables, and probably for any code you&#39;ve generated yourself. Or for highly-optimized code. So don&#39;t fret if you see it — and don&#39;t count on them being available everywhere.</p>
+</blockquote>
+
+<p>Much more detailed instructions for all of this can be found in the <a href="http://llvm.org/docs/SourceLevelDebugging.html#c-c-source-file-information">LLVM Source Level Debugging docs</a>.</p>
+
+<hr>
+
+<p>I hope that these tips were helpful. If you have other time-saving tricks in LLVM, just let me know on Twitter!</p>
+
+<div class="tweet">
+<blockquote class="twitter-tweet" lang="en" data-cards="hidden"><p lang="en" dir="ltr">A couple tips for debugging LLVM. Pairs nicely with <a href="https://twitter.com/samps">@samps</a>&#39;s fantastic intro to LLVM.&#10;<a href="http://t.co/nza1ruk9SJ">http://t.co/nza1ruk9SJ</a></p>&mdash; Brandon Holt (@holtbg) <a href="https://twitter.com/holtbg/status/628375375618281472">August 4, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

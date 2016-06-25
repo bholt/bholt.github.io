@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — Building LLVM on OSX</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Building LLVM on OSX">
+        <meta name="twitter:description" content="Notes from how I've built LLVM to be most useful for me (and maybe for you, too).">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>Building LLVM on OSX <small></small></h1>
+
+<p class="text-muted">29 Jan 2014</p>
+
+<div class="post">
+<p>I&#39;ve had a lot of headaches building LLVM from source to suit my purposes. It&#39;s fairly straightforward to download a source distribution and get <em>something</em> built, but I&#39;ve had to refine how I build LLVM so that things are setup to be useful for my workflow. Namely, I need:</p>
+
+<ul>
+<li>Release build with debug symbols so Grappa doesn&#39;t take forever to build.</li>
+<li>Assertions enabled so LLVM will catch bugs in my passes (disabled in Rel* builds)</li>
+<li>CMake module information for building LLVM passes out-of-source (comes from building using CMake)</li>
+<li>C++11 language/library support (<code>LLVM_ENABLE_CXX11</code>)</li>
+</ul>
+
+<p>To build LLVM, I do the following (with, of course, <code>$prefix</code> replaced with the path):</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span><span class="nb">cd </span>llvm
+<span class="gp">$ </span>mkdir -p build/Release
+<span class="gp">$ </span><span class="nb">cd </span>build/Release
+<span class="gp">$ </span>cmake ../.. -GNinja <span class="se">\</span>
+    -DLLVM_ENABLE_CXX11<span class="o">=</span>ON <span class="se">\</span>
+    -DCMAKE_BUILD_TYPE<span class="o">=</span>RelWithDebInfo <span class="se">\</span>
+    -DCMAKE_INSTALL_PREFIX<span class="o">=</span><span class="nv">$prefix</span> <span class="se">\</span>
+    -DLLVM_ENABLE_ASSERTIONS<span class="o">=</span>ON <span class="se">\</span>
+<span class="gp">$ </span>ninja
+<span class="gp">$ </span>ninja install
+</code></pre></div>
+
+<p>On Linux, I add the following to ensure I build against a newer build of GCC:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">-DGCC_INSTALL_PREFIX<span class="o">=</span><span class="nv">$path_to_gcc48_install</span>
+</code></pre></div>
+
+<p>On OSX, this flag isn&#39;t sufficient. No matter how I build it, it seems unable to find the standard headers. I debugged this issue using <code>clang</code>&#39;s <code>-v</code> flag to get the list of include directories it&#39;s searching:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>/opt/llvm/head/bin/clang++ -v -x c++ /dev/null -fsyntax-only
+... elided some output ...
+ignoring nonexistent directory <span class="s2">"/usr/include/c++/v1"</span>
+<span class="c">#include "..." search starts here:</span>
+<span class="c">#include &lt;...&gt; search starts here:</span>
+ /opt/llvm/head/bin/../include/c++/v1
+ /usr/local/include
+ /opt/llvm/head/bin/../lib/clang/3.5/include
+ /usr/include
+ /System/Library/Frameworks <span class="o">(</span>framework directory<span class="o">)</span>
+ /Library/Frameworks <span class="o">(</span>framework directory<span class="o">)</span>
+End of search list.
+</code></pre></div>
+
+<p>Seeing that it&#39;s searching for the C++ standard headers in <code>/opt/llvm/head/include/c++/v1</code>, I simply sym-linked them from their actual location:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>ln -s /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/c++/v1 <span class="nv">$prefix</span>/include/c++/v1
+</code></pre></div>
+
+<h2 id="building-my-pass">Building my pass</h2>
+
+<p>Then to build my pass (out of source), I adapted something from <a href="http://llvm.org/docs/CMake.html#cmake-out-of-source-pass">LLVM&#39;s CMake instructions</a>, but to make sure I&#39;m using the correct version of LLVM, I explicitly point it to the version built above:</p>
+
+<div class="highlight"><pre><code class="language-cmake" data-lang="cmake">set( LLVM_DIR "${LLVM_ROOT}/share/llvm/cmake" )
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${LLVM_DIR} )
+find_package(LLVM)
+include(AddLLVM)
+add_definitions(${LLVM_DEFINITIONS})
+include_directories(${LLVM_INCLUDE_DIRS})
+link_directories(${LLVM_LIBRARY_DIRS})
+
+add_llvm_loadable_module( LLVMMyPass ${SOURCES} )
+set_target_properties( LLVMMyPass PROPERTIES COMPILE_FLAGS "-fno-rtti" )
+</code></pre></div>
+
+<h2 id="compiling-other-code-using-my-pass">Compiling other code using my pass</h2>
+
+<p>Finally, I have a special CMake macro for making executable that compile using my pass. </p>
+
+<div class="highlight"><pre><code class="language-cmake" data-lang="cmake">
+get_property( MY_PASS_LIB TARGET LLVMMyPass  PROPERTY LOCATION )
+
+macro(add_grappaclang_exe target)
+  add_executable(${target} ${ARGN})
+  add_dependencies(${target} LLVMMyPass)
+
+  # make each of the individual .cpp files dependent on the 'compiler' target (my custom pass)
+  set_source_files_properties(${ARGN} PROPERTIES
+    OBJECT_DEPENDS LLVMMyPass
+  )
+
+  # load the 
+  set_target_properties(${target} PROPERTIES
+    COMPILE_FLAGS       "-Xclang -load -Xclang ${MY_PASS_LIB}"
+  )
+endmacro()
+</code></pre></div>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>
