@@ -12,16 +12,16 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="/~bholt/css/madoko.css" rel="stylesheet">
-        <link href="/~bholt/css/theme.css" rel="stylesheet">
-        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <link href="/css/madoko.css" rel="stylesheet">
+        <link href="/css/theme.css" rel="stylesheet">
+        <link href="/css/syntax.css" rel="stylesheet">
         <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
 
         
@@ -45,7 +45,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/">
+                  <a class="nav-link " href="/">
                     Home
                   </a>
                 </li>
@@ -53,7 +53,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link active" href="/~bholt/projects/">
+                  <a class="nav-link active" href="/projects/">
                     Projects
                   </a>
                 </li>
@@ -61,7 +61,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/cv.html">
+                  <a class="nav-link " href="/cv.html">
                     CV
                   </a>
                 </li>
@@ -69,7 +69,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/posts/">
+                  <a class="nav-link " href="/posts/">
                     Posts
                   </a>
                 </li>
@@ -102,7 +102,7 @@
 
 <h2 id="disciplined-inconsistency"><a href="http://sampa.cs.washington.edu/projects/disciplined-inconsistency.html">Disciplined Inconsistency</a></h2>
 
-<p><img src="/%7Ebholt/img/ipa.jpg" alt="IPA"></p>
+<p><img src="/img/ipa.jpg" alt="IPA"></p>
 
 <p><em>Making consistency safe again.</em></p>
 
@@ -142,7 +142,7 @@ and 2-10x faster than strong consistency.</p>
 
 <h2 id="claret"><a href="http://sampa.cs.washington.edu/projects/claret.html">Claret</a></h2>
 
-<p><img src="/%7Ebholt/img/claret.jpg" alt="Claret"></p>
+<p><img src="/img/claret.jpg" alt="Claret"></p>
 
 <p><em>Using abstract data types to expose application-level semantics in datastores.</em></p>
 
@@ -151,7 +151,7 @@ and 2-10x faster than strong consistency.</p>
 <p>Claret builds on this data structure storage, exposing the abstract semantics of these data types to the underlying distributed datastore to enable new optimizations. Crucially, by exposing the concurrency between commutative ADT operations that already exists in these applications, Claret can provide much stronger guarantees — serializable distributed transactions — with much less cost to throughput and latency than traditional systems. Our model allows programmers to either choose from a library of existing data types or extend the system with custom data types that specifically meet their application&#39;s needs, in order to expose the maximum amount of information to the system. Our prototype datastore implements optimizations that leverage this information, including abstract locks and transaction boosting, operation combining, and operation reordering or phasing.</p>
 
 <ul>
-<li><div class="pub"><strong><a href="http://dl.acm.org/authorize?N96590" class="pub-title">Claret: Using Data Types for Highly Concurrent Distributed Transactions</a></strong><br/>Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze<br/><span class="venue"><a href="http://papoc.di.uminho.pt">Workshop on Principles and Practice of Consistency (PaPoC&#39;15)</a></span> — April 2015<br/><span class="pub"><a href="http://dl.acm.org/authorize?N96590"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Paper</a> | <a href="/~bholt/pubs/claret-papoc-slides.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a> | <a href="/~bholt/files/claret-papoc.key"><i class="fa fa-television" aria-hidden="true"></i> Key</a></span></div></li>
+<li><div class="pub"><strong><a href="http://dl.acm.org/authorize?N96590" class="pub-title">Claret: Using Data Types for Highly Concurrent Distributed Transactions</a></strong><br/>Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze<br/><span class="venue"><a href="http://papoc.di.uminho.pt">Workshop on Principles and Practice of Consistency (PaPoC&#39;15)</a></span> — April 2015<br/><span class="pub"><a href="http://dl.acm.org/authorize?N96590"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Paper</a> | <a href="/pubs/claret-papoc-slides.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a> | <a href="/files/claret-papoc.key"><i class="fa fa-television" aria-hidden="true"></i> Key</a></span></div></li>
 <li>Full paper in submission.</li>
 </ul>
 
@@ -161,7 +161,7 @@ and 2-10x faster than strong consistency.</p>
 
 <h2 id="grappa"><a href="http://grappa.io">Grappa</a></h2>
 
-<p><img src="/~bholt/img/grappa_logo.svg" class="pull-right" style="width:250px;margin:15px"/>
+<p><img src="/img/grappa_logo.svg" class="pull-right" style="width:250px;margin:15px"/>
 Scaling irregular applications on commodity hardware.</p>
 
 <p>Irregular applications are those that do lots of hard-to-predict, data-dependent, fine-grained memory accesses. Examples include graph analytics, molecular dynamics, circuit simulation, neuromorphic computation, and many more. The lack of spatial and temporal locality in these applications makes it difficult to scale them beyond a single node because commodity networks need large packets to get near their peak throughput. The goal of this project is to make it easier to develop and run those kinds of applications on large compute clusters. We see the same few tricks being implemented over and over when irregular applications are tuned for maximum performance, such as rewriting parts to buffer communication, using asynchronous callbacks to overlap communication and disk I/O with computation. In addition to being wasteful, this process can be error-prone.</p>
@@ -179,8 +179,8 @@ Scaling irregular applications on commodity hardware.</p>
 <p>One of the primary tricks to Grappa&#39;s success is moving computation to where data, which works especially well in low-locality situations. However, explicitly writing these <em>delegate operations</em> breaks the PGAS shared memory abstraction, tying code to one particular memory layout, and making writing performant distributed applications tedious. <em>Alembic</em> is a compiler analysis written for <a href="http://llvm.org">LLVM</a> that automatically transforms threads to do computation migration to improve locality. Using a technique similar to continuation-passing style transformation, Alembic chooses the best places to migrate, reorders memory instructions, and splits threads into a series of messages, providing high-performance migrating threads automatically. This work will be presented at OOPSLA in October:</p>
 
 <ul>
-<li><div class="pub"><strong><a href="http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf" class="pub-title">Alembic: Automatic Locality Extraction via Migration</a></strong><br/>Brandon Holt, Preston Briggs, Luis Ceze, Mark Oskin<br/><span class="venue"><a href="http://2014.splashcon.org/track/oopsla2014">OOPSLA&#39;14</a></span> — October 2014<br/><span class="pub"><a href="http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Paper</a> | <a href="/~bholt/pubs/alembic-oopsla.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a> | <a href="/~bholt/pubs/alembic-oopsla.key"><i class="fa fa-television" aria-hidden="true"></i> Key</a> | <a href="https://github.com/uwsampa/grappa/tree/compiler/compiler"><i class="fa fa-code-fork" aria-hidden="true"></i> Code</a></span></div></li>
-<li>A post summarizing this work: <a href="/%7Ebholt/posts/alembic-appearing-at-oopsla14.html">Alembic: Distilling C++ into high performance Grappa</a></li>
+<li><div class="pub"><strong><a href="http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf" class="pub-title">Alembic: Automatic Locality Extraction via Migration</a></strong><br/>Brandon Holt, Preston Briggs, Luis Ceze, Mark Oskin<br/><span class="venue"><a href="http://2014.splashcon.org/track/oopsla2014">OOPSLA&#39;14</a></span> — October 2014<br/><span class="pub"><a href="http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Paper</a> | <a href="/pubs/alembic-oopsla.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a> | <a href="/pubs/alembic-oopsla.key"><i class="fa fa-television" aria-hidden="true"></i> Key</a> | <a href="https://github.com/uwsampa/grappa/tree/compiler/compiler"><i class="fa fa-code-fork" aria-hidden="true"></i> Code</a></span></div></li>
+<li>A post summarizing this work: <a href="/posts/alembic-appearing-at-oopsla14.html">Alembic: Distilling C++ into high performance Grappa</a></li>
 </ul>
 
 <h3 id="flat-combining">Flat combining</h3>
@@ -188,8 +188,8 @@ Scaling irregular applications on commodity hardware.</p>
 <p>The general idea is that synchronization on global shared data structures can be massively improved by waiting and combining many operations together, and Grappa&#39;s massive multithreading allows us to tolerate this additional latency.</p>
 
 <ul>
-<li><div class="pub"><strong><a href="/pubs/holt-pgas13.pdf" class="pub-title">Flat Combining Synchronized Global Data Structures</a></strong><br/>Brandon Holt, Jacob Nelson, Brandon Myers, Preston Briggs, Luis Ceze, Simon Kahan, Mark Oskin<br/><span class="venue"><a href="http://www.pgas2013.org.uk">International Conference on PGAS Programming Models (PGAS&#39;14)</a></span> — October 2013<br/><span class="pub"><a href="/~bholt/pubs/holt-pgas13.pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Paper</a> | <a href="/~bholt/pubs/holt-pgas13-slides.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a> | <a href="https://github.com/uwsampa/grappa"><i class="fa fa-code-fork" aria-hidden="true"></i> Code</a></span></div></li>
-<li><div class="pub"><strong>Turning Contention Into Cooperation</strong><br/><span class="venue">UW CSE Qualifying Examination Talk</span> — December 2013<br/><span class="pub"><a href="/~bholt/pubs/holt-quals.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a></span></div></li>
+<li><div class="pub"><strong><a href="/pubs/holt-pgas13.pdf" class="pub-title">Flat Combining Synchronized Global Data Structures</a></strong><br/>Brandon Holt, Jacob Nelson, Brandon Myers, Preston Briggs, Luis Ceze, Simon Kahan, Mark Oskin<br/><span class="venue"><a href="http://www.pgas2013.org.uk">International Conference on PGAS Programming Models (PGAS&#39;14)</a></span> — October 2013<br/><span class="pub"><a href="/pubs/holt-pgas13.pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Paper</a> | <a href="/pubs/holt-pgas13-slides.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a> | <a href="https://github.com/uwsampa/grappa"><i class="fa fa-code-fork" aria-hidden="true"></i> Code</a></span></div></li>
+<li><div class="pub"><strong>Turning Contention Into Cooperation</strong><br/><span class="venue">UW CSE Qualifying Examination Talk</span> — December 2013<br/><span class="pub"><a href="/pubs/holt-quals.pdf"><i class="fa fa-television" aria-hidden="true"></i> Slides</a></span></div></li>
 </ul>
 
 <h3 id="task-migration-simulation">Task migration simulation</h3>
@@ -208,7 +208,7 @@ Scaling irregular applications on commodity hardware.</p>
 
 <h3 id="igor"><a href="http://github.com/bholt/igor">Igor</a></h3>
 
-<p><img src="/~bholt/img/mini-igor.jpg" class="img-thumbnail pull-right" style="width:250px;margin:15px"/></p>
+<p><img src="/img/mini-igor.jpg" class="img-thumbnail pull-right" style="width:250px;margin:15px"/></p>
 
 <p>This project was born out of necessity when we wanted to be able to collect output from many experiments in Grappa and related projects. We also needed a way to easily enumerate a large multi-variate parameter space, especially when trying to find the right parameters to maximize performance for Grappa. This script aims to help with generating a large number of experiments, parsing their output, and storing experiment inputs and outcomes to a SQLite database automatically. For now, it simply supports having a static script that runs all the experiments in a single batch and gathers the results automatically. We would like to make the experience more interactive, where a prompt can be used to schedule new parameter sweeps, monitor progress of existing experiments, inspect gathered data points, and visualize preliminary results. A complete re-write to support this goal will probably happen--eventually.</p>
 
@@ -227,10 +227,10 @@ Scaling irregular applications on commodity hardware.</p>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
       <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
-      <script src="/~bholt/js/bootstrap.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
 
       <!-- support retina -->
-      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+      <script type="text/javascript" src="/js/srcset-polyfill.js"></script>
 
     </body>
 </html>

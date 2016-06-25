@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — ⚗ Alembic</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="⚗ Alembic">
+        <meta name="twitter:description" content="One of the hardest parts about writing distributed applications is locality — this compiler analysis automatically transforms threads to migrate to the data they access, minimizing communication and improving overall performance.
+">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>⚗ Alembic <small>Distilling C++ into high-performance Grappa</small></h1>
+
+<p class="text-muted">16 Aug 2014</p>
+
+<div class="post">
+<p>One of the hardest parts about writing distributed applications is locality: where to put the data, how to access it, and where to perform computation to minimize how much data must be moved. My new <a href="http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf">paper</a>, to appear at <a href="http://2014.splashcon.org/track/oopsla2014">OOPSLA&#39;14</a> in October, describes a compiler analysis called Alembic which helps distributed application programmers deal with locality by making threads migrate to the data they use automatically.</p>
+
+<h3 id="traditional-distributed-shared-memory-model">Traditional distributed shared memory model</h3>
+
+<p>Partitioned global address space (PGAS) languages allow distributed-memory machines, such as clusters, to be programmed as if they were a single shared memory machine. When run, these programs are actually run in parallel on the many nodes of a cluster, and their data is <em>partioned</em> among the nodes&#39; local memories, but the programmer need not worry about this because the PGAS compiler automatically takes care of moving this data around as needed.
+This means that programmers need not worry about where their data is when they are designing their application. Once an application is performing correctly, the programmer can go back and tune the performance by optimizing data layout to improve locality.</p>
+
+<!-- For the class of applications targeted by [Grappa](http://grappa.io), such as analytics on the Twitter follower graph, there is often little locality to be exploited, and no good way to partition the data. For these sorts of applications, Grappa  -->
+
+<p>The typical way that compilers for PGAS languages do data movement is to generate messages to fetch the data for each remote memory access. A runtime system performs this communication, and the requesting thread waits around until it receives the data it needs. Many clever optimizations have been done to overlap communication and computation, combine messages from multiple threads, and cache frequently-accessed data.</p>
+
+<h3 id="automatic-locality-extraction-via-migration">Automatic locality extraction via migration</h3>
+
+<p>However, consider a situation where a thread reads some value, computes something, and immediate writes the result back (a read-modify-write), such as incrementing a counter or appending to a list. In that case, the traditional PGAS put/get approach requires the thread to request the data, wait for the response, modify the value, and then send back the new value to be written (and presumably wait for a message acknowledging when that operation is complete). Instead, what if the thread could run that whole chunk of computation remotely: read the value, compute the new value, and write it back, all with a single message. Generalizing this case, one can imagine continuing to run the thread at that remote node, until another one of these cases comes up, at which point the thread <em>migrates</em> again.</p>
+
+<p>Alembic is a compiler analysis to do this kind of transformation automatically. It analyzes PGAS programs, determines where it is likely to be profitable to migrate, and splits the thread into a sequence of messages and <em>continuations</em> that migrate the thread to its data. Alembic is implemented for the <a href="http://llvm.org">LLVM</a> compiler framework, and targets the <a href="http://grappa.io">Grappa</a> runtime system, which is designed for <em>irregular applications</em> where migration is particularly important for performance.</p>
+
+<p>The full details of the analysis, how it works, and the evaluation of how it performs on some benchmarks, can be found in the <a href="http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf">OOPSLA paper</a>.</p>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

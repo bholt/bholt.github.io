@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 	
 	<title type="text" xml:lang="en">Brandon Holt</title>
-    <link type="application/atom+xml" href="http://homes.cs.washington.edu/~bholt//~bholt/blog/blog.xml" rel="self"/>
-    <link href="http://homes.cs.washington.edu/~bholt//~bholt/"/>
-	<updated>2016-06-24T17:49:18-07:00</updated>
-    <id>http://homes.cs.washington.edu/~bholt//~bholt/</id>
+    <link type="application/atom+xml" href="http://homes.cs.washington.edu/~bholt//blog/blog.xml" rel="self"/>
+    <link href="http://homes.cs.washington.edu/~bholt//"/>
+	<updated>2016-06-24T17:54:01-07:00</updated>
+    <id>http://homes.cs.washington.edu/~bholt//</id>
 	<author>
 		<name>the Sampa group</name>
 	</author>
@@ -14,10 +14,10 @@
 	<entry>
         
             <title>06 June 2016</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/blog/"/>
+            <link href="http://homes.cs.washington.edu/~bholt//blog/"/>
         
 		<updated>2016-06-06T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/ipa-tr.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/ipa-tr.html</id>
 		<content type="html">&lt;p&gt;Our full-length paper on &lt;a href=&quot;http://sampa.cs.washington.edu/projects/disciplined-inconsistency.html&quot;&gt;Disciplined Inconsistency&lt;/a&gt;, currently in submission, is now available as a &lt;a href=&quot;http://bholt.github.io/gen/ipa-tr.pdf&quot;&gt;tech report&lt;/a&gt;.&lt;/p&gt;
 </content>
 	</entry>
@@ -25,21 +25,21 @@
 	<entry>
         
             <title>15 December 2015</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/blog/"/>
+            <link href="http://homes.cs.washington.edu/~bholt//blog/"/>
         
 		<updated>2015-12-15T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/generals.html</id>
-		<content type="html">&lt;p&gt;I passed my Generals exam and am now a real PhD candidate! The unusually curious can check out my generals document on &lt;a href=&quot;/%7Ebholt/files/generals.html&quot;&gt;Mitigating Contention in Distributed Systems&lt;/a&gt;.&lt;/p&gt;
+        <id>http://homes.cs.washington.edu/~bholt//posts/generals.html</id>
+		<content type="html">&lt;p&gt;I passed my Generals exam and am now a real PhD candidate! The unusually curious can check out my generals document on &lt;a href=&quot;/files/generals.html&quot;&gt;Mitigating Contention in Distributed Systems&lt;/a&gt;.&lt;/p&gt;
 </content>
 	</entry>
 	
 	<entry>
         
             <title>04 August 2015</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/blog/"/>
+            <link href="http://homes.cs.washington.edu/~bholt//blog/"/>
         
 		<updated>2015-08-04T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/teaching-next-winter.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/teaching-next-winter.html</id>
 		<content type="html">&lt;p&gt;I am &lt;a href=&quot;https://www.cs.washington.edu/sites/default/files/education/time-sched/teaching2015-2016.html&quot;&gt;officially&lt;/a&gt; teaching CSE 351 (Hardware/Software Interface) next &lt;strike&gt;Winter&lt;/strike&gt; Spring quarter. This is the first time you get to see end-to-end how computers actually run programs — so excited to teach it!&lt;/p&gt;
 </content>
 	</entry>
@@ -47,10 +47,10 @@
 	<entry>
         
             <title>LLVM Debugging Tips and Tricks</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/llvm-debugging.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/llvm-debugging.html"/>
         
 		<updated>2015-08-03T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/llvm-debugging.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/llvm-debugging.html</id>
 		<content type="html">&lt;p&gt;Back when I was working heavily with LLVM, I learned a bunch of little tricks that made my life so much easier. I meant to document them back when they were fresh in my mind, but didn&amp;#39;t get around to it. Now recently I&amp;#39;ve been chatting with several colleagues at UW that are just getting started with LLVM, and thought I&amp;#39;d go back and put together a couple of the useful tricks I learned.&lt;/p&gt;
 
 &lt;p&gt;This also follows on the heels of Adrian&amp;#39;s &lt;a href=&quot;http://adriansampson.net/blog/llvm.html&quot;&gt;fantastic post&lt;/a&gt; on how to get up and running using LLVM for research (which I highly recommend to anyone who ever needs to &lt;em&gt;&amp;quot;do stuff with programs&amp;quot;&lt;/em&gt;). Adrian covers all the basics of why LLVM, how to get started, and what some basic passes could look like. The tricks I&amp;#39;ll lay out here have more to do with day-to-day debugging tasks.&lt;/p&gt;
@@ -152,7 +152,7 @@ Process 79186 stopped
 Writing &#39;/var/folders/w6/pf2p4_tx1097_3gc9_dl3yr00009sq/T/cfghello-6a63ec.dot&#39;...  done.
 Running &#39;/usr/local/bin/dot&#39; program...  done.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;/~bholt/img/llvm-viewcfg.png&quot; alt=&quot;Function::viewCFG()&quot; class=&quot;img-responsive img-rounded&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/llvm-viewcfg.png&quot; alt=&quot;Function::viewCFG()&quot; class=&quot;img-responsive img-rounded&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As with everything else in LLVM, the DOT graph printer is built to be extended, so you can define custom graphs for debugging your passes, or for visualizing the output of your tool. A good place to start looking is in the documentation for &lt;a href=&quot;http://llvm.org/docs/doxygen/html/structllvm_1_1DefaultDOTGraphTraits.html&quot;&gt;DefaultDOTGraphTraits&lt;/a&gt;.&lt;/p&gt;
 
@@ -226,10 +226,10 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 	<entry>
         
             <title>Disciplined Inconsistency</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/disciplined-inconsistency.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/disciplined-inconsistency.html"/>
         
 		<updated>2015-05-03T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/disciplined-inconsistency.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/disciplined-inconsistency.html</id>
 		<content type="html">
 &lt;div class=&quot;body madoko&quot; style=&quot;line-adjust:0&quot;&gt;
 
@@ -248,7 +248,7 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 &lt;p class=&quot;p noindent&quot; data-line=&quot;35&quot;&gt;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;If you&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;ve heard me speak at all in the last, hmm, half a year at least, then you&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;ve probably heard me use this example, but just in case, I&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;ll review it quickly here. &lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;&lt;em class=&quot;em-star1&quot;&gt;Retwis&lt;/em&gt;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt; is a Twitter clone built on Redis using its support for data structures. This is great because it means instead of using just keys and values, we can work with data structures like lists and sets. For this example, all that&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;s important is that we keep track of all the users who have retweeted a post with a &lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;&lt;code class=&quot;code code1&quot;&gt;Set&lt;/code&gt;&lt;span data-line=&quot;35&quot;&gt;&lt;/span&gt;.
 &lt;/p&gt;
 &lt;figure class=&quot;fig align-center&quot; data-line=&quot;37&quot; style=&quot;text-align:center&quot;&gt;
-&lt;p class=&quot;p noindent&quot; data-line=&quot;38&quot;&gt;&lt;span data-line=&quot;38&quot;&gt;&lt;/span&gt;&lt;img src=&quot;/~bholt/img/retwis-overview.png&quot; alt=&quot;diagram of retweet set&quot; data-path=&quot;/~bholt/img/retwis-overview.png&quot;&gt;&lt;span data-line=&quot;38&quot;&gt;&lt;/span&gt;
+&lt;p class=&quot;p noindent&quot; data-line=&quot;38&quot;&gt;&lt;span data-line=&quot;38&quot;&gt;&lt;/span&gt;&lt;img src=&quot;/img/retwis-overview.png&quot; alt=&quot;diagram of retweet set&quot; data-path=&quot;/img/retwis-overview.png&quot;&gt;&lt;span data-line=&quot;38&quot;&gt;&lt;/span&gt;
 &lt;/p&gt;
 &lt;div class=&quot;p indent&quot; data-line=&quot;40&quot;&gt;&lt;span data-line=&quot;40&quot;&gt;&lt;/span&gt;&lt;fig-caption class=&quot;figure-caption&quot;&gt;&lt;span class=&quot;caption-before&quot;&gt;&lt;strong class=&quot;strong-star2&quot;&gt;Figure &lt;span class=&quot;figure-label&quot;&gt;1&lt;/span&gt;.&lt;/strong&gt; &lt;/span&gt;Retwis: Twitter clone built with Redis-like data types.&lt;/fig-caption&gt;&lt;/div&gt;&lt;/figure&gt;
 &lt;p class=&quot;p noindent&quot; data-line=&quot;41&quot;&gt;&lt;span data-line=&quot;41&quot;&gt;&lt;/span&gt;To retweet the post, users add themselves to the set.
@@ -272,7 +272,7 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 &lt;/p&gt;&lt;h3 id=&quot;sec-error-tolerance&quot; class=&quot;h2&quot; data-line=&quot;66&quot; data-heading-depth=&quot;2&quot; style=&quot;display:block&quot;&gt;&lt;span data-line=&quot;66&quot;&gt;&lt;/span&gt;Error Tolerance&lt;/h3&gt;
 &lt;p class=&quot;p noindent&quot; data-line=&quot;68&quot;&gt;&lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;Wouldn&lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;t it be nice to have some idea what the error is? Rather than simply accepting that it could be arbitrarily wrong but probably won&lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;t be, what if we could ensure that the error fit within some acceptable range? What if we could tailor this error tolerance based on exactly how we use the value. For instance, in Twitter, we have a pretty well-defined notion of what is acceptable: &lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;&lt;em class=&quot;em-star1&quot;&gt;what is displayed to the user&lt;/em&gt;&lt;span data-line=&quot;68&quot;&gt;&lt;/span&gt;.
 &lt;/p&gt;
-&lt;p class=&quot;p indent&quot; data-line=&quot;70&quot;&gt;&lt;span data-line=&quot;70&quot;&gt;&lt;/span&gt;&lt;img src=&quot;/~bholt/img/retwis-me-vs-ellen.png&quot; alt=&quot;My tweet vs Ellen&amp;#39;s tweet&quot; data-path=&quot;/~bholt/img/retwis-me-vs-ellen.png&quot;&gt;&lt;span data-line=&quot;70&quot;&gt;&lt;/span&gt;
+&lt;p class=&quot;p indent&quot; data-line=&quot;70&quot;&gt;&lt;span data-line=&quot;70&quot;&gt;&lt;/span&gt;&lt;img src=&quot;/img/retwis-me-vs-ellen.png&quot; alt=&quot;My tweet vs Ellen&amp;#39;s tweet&quot; data-path=&quot;/img/retwis-me-vs-ellen.png&quot;&gt;&lt;span data-line=&quot;70&quot;&gt;&lt;/span&gt;
 &lt;/p&gt;
 &lt;p class=&quot;p indent&quot; data-line=&quot;72&quot;&gt;&lt;span data-line=&quot;72&quot;&gt;&lt;/span&gt;For tweets like Ellen&lt;span data-line=&quot;72&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;72&quot;&gt;&lt;/span&gt;s Oscar selfie, we truncate it to a couple significant figures, so the count can be off by hundreds of thousands and still come out the same. Meanwhile my tweet, which has been retweeted 2 times (a lot for me), better have exactly the right answer otherwise I&lt;span data-line=&quot;72&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;72&quot;&gt;&lt;/span&gt;ll know (because one of them is probably my mother, who called to tell me she retweeted it).
 &lt;/p&gt;
@@ -329,13 +329,13 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 	<entry>
         
             <title>Musings from PaPoC</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/papoc-musings.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/papoc-musings.html"/>
         
 		<updated>2015-04-29T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/papoc-musings.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/papoc-musings.html</id>
 		<content type="html">&lt;h1 id=&quot;papoc-musings&quot;&gt;Papoc Musings&lt;/h1&gt;
 
-&lt;p&gt;&lt;img src=&quot;/~bholt/img/papoy.jpg&quot; class=&quot;pull-right&quot; alt=&quot;Papoy!&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/papoy.jpg&quot; class=&quot;pull-right&quot; alt=&quot;Papoy!&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The Workshop on Principles and Practice of Consistency (PaPoC) was co-located with EuroSys and took place the day before the conference proper began. This is the second year of the workshop, though my first time — slightly re-branded from last year that explicitly focused on &lt;em&gt;eventual consistency&lt;/em&gt; — this year the call more broadly encouraged discussions about consistency models for distributed systems. This seemed like a good fit for some of my Claret work on using data types in distributed data stores, though I think &lt;a href=&quot;https://news.cs.washington.edu/2014/12/05/cse-holiday-party-2014/&quot;&gt;Luis&lt;/a&gt; was mostly behind the idea because he thought it sounded like &lt;a href=&quot;https://news.cs.washington.edu/2014/12/05/cse-holiday-party-2014/&quot;&gt;&amp;quot;Papoy!&amp;quot;&lt;/a&gt;.&lt;/p&gt;
 
@@ -343,7 +343,7 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 
 &lt;h2 id=&quot;riak&quot;&gt;Riak&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;/~bholt/img/riak-logo.png&quot; class=&quot;pull-right&quot; alt=&quot;Riak logo&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/riak-logo.png&quot; class=&quot;pull-right&quot; alt=&quot;Riak logo&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://basho.com/riak&quot;&gt;Riak&lt;/a&gt; is an eventually-consistent key-value store developed and maintained by &lt;a href=&quot;http://basho.com&quot;&gt;Basho Technologies&lt;/a&gt;. It&amp;#39;s already shown up on my radar as a key-value store that supports complex data types — &lt;a href=&quot;http://docs.basho.com/riak/latest/theory/concepts/crdts/&quot;&gt;CRDTs&lt;/a&gt;. Built-in CRDTs include Counters (&amp;quot;Registers&amp;quot;), Flags (Maps with 1-bit values), Sets, and Maps (whose values can recursively be CRDTs). Riak developed these data types to help users wrangle with eventual consistency and build complex applications with fewer bugs. From the PaPoC attendees, it sounds like these CRDTs are being adopted by at least some of the users of Riak (it&amp;#39;d be cool to find some actual numbers).&lt;/p&gt;
 
@@ -371,7 +371,7 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 
 &lt;p&gt;Have you ever been sitting in the same room with a bunch of colleagues, all of you concurrently editing the same Google Doc? Well those of us in the &lt;a href=&quot;http://sampa.cs.washington.edu/&quot;&gt;Sampa&lt;/a&gt; lab at UW do. The first weekly meeting of each quarter we do &amp;quot;2-minute madness&amp;quot; (lightning talks) where everyone ostensibly presents what they&amp;#39;re working on right now in — you guessed it — two minutes or less, presented from a shared Google Slides presentation for convenience. In reality, the majority ends up being bobble-head photoshop work, inside jokes, and prank slides added at the last minute.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/%7Ebholt/img/spampa-lightning.png&quot; alt=&quot;Sampa joke slide&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/spampa-lightning.png&quot; alt=&quot;Sampa joke slide&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;Now imagine the worst: all of us are in the same room, collaborating on this super crucial task, and the network goes down. Suddenly, even though we all have the slides, and all of our machines are still Wifi-capable, we suddenly are stuck in our own worlds, editing separate copies of the slides, so the version being presented is, sadly devoid of prank slides — err, I mean exciting new research.&lt;/p&gt;
 
@@ -412,10 +412,10 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 	<entry>
         
             <title>24 April 2015</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/blog/"/>
+            <link href="http://homes.cs.washington.edu/~bholt//blog/"/>
         
 		<updated>2015-04-24T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/eurosys.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/eurosys.html</id>
 		<content type="html">&lt;p&gt;Presented &lt;a href=&quot;projects/claret.html&quot;&gt;Claret&lt;/a&gt; at &lt;a href=&quot;http://papoc.di.uminho.pt&quot;&gt;PaPoC&lt;/a&gt; workshop and &lt;a href=&quot;http://eurosys2015.labri.fr&quot;&gt;EuroSys&lt;/a&gt; poster session. Got some fantastic feedback, watch for followup posts as I sort through it all.&lt;/p&gt;
 </content>
 	</entry>
@@ -423,10 +423,10 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 	<entry>
         
             <title>13 March 2015</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/blog/"/>
+            <link href="http://homes.cs.washington.edu/~bholt//blog/"/>
         
 		<updated>2015-03-13T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/oopsla-artifact.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/oopsla-artifact.html</id>
 		<content type="html">&lt;p&gt;I will be on the &lt;a href=&quot;http://2015.splashcon.org/track/splash2015-artifacts&quot;&gt;2015 OOPSLA Artifact Evaluation Committee&lt;/a&gt;.&lt;/p&gt;
 </content>
 	</entry>
@@ -434,10 +434,10 @@ Running &#39;/usr/local/bin/dot&#39; program...  done.
 	<entry>
         
             <title>Scholarly markdown (with R) for fun and (non-monetary) profit</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/scholarly-markdown.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/scholarly-markdown.html"/>
         
 		<updated>2015-02-24T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/scholarly-markdown.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/scholarly-markdown.html</id>
 		<content type="html">&lt;blockquote&gt;
 &lt;p&gt;I&amp;#39;ve been thinking a lot recently about how I can making it easier for me to share ongoing research.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -535,10 +535,10 @@ I don&amp;#39;t know quite how to do that, maybe something with the Google Docs 
 	<entry>
         
             <title>Simulating an interactive Twitter workload</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/simulating-an-interactive-twitter-workload.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/simulating-an-interactive-twitter-workload.html"/>
         
 		<updated>2015-02-18T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/simulating-an-interactive-twitter-workload.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/simulating-an-interactive-twitter-workload.html</id>
 		<content type="html">&lt;p&gt;This week I submitted some early work on mitigating contention on hot keys in key/value stores to a workshop co-located with EuroSys. In order to better motivate the work, I wanted to recreate scenarios from real life that lead to lots of contention on a few keys. In particular, what is most interesting for my work is cases where a lot of clients are all attempting to read and update the same key at once. One place where this happens organically is when something, such as a tweet, &amp;quot;goes &lt;em&gt;viral&lt;/em&gt;&amp;quot; and is suddenly being seen, commented on, and re-shared by millions of people. This web phenomenon causes all kinds of problems for designers and maintainers of social networks or really anything on the internet. Though Twitter&amp;#39;s &lt;a href=&quot;http://www.whatisfailwhale.info/&quot;&gt;failwhale&lt;/a&gt; has been retired for a couple years now, and Twitter can now withstand high tweet volumes, even the spikes that follow a #WorldCup goal or Katy Perry&amp;#39;s SuperBowl shark, some situations can still slow it to a crawl, like Ellen DeGeneres&amp;#39;s 2014 Oscar selfie.&lt;/p&gt;
 
 &lt;p&gt;It turned out that just with an existing graph generator and a simple model of user behavior, I was able to recreate some of this viral retweeting behavior in my simulated workload to put my system to the test.&lt;/p&gt;
@@ -640,17 +640,17 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000,
 	<entry>
         
             <title>A plan for un-crashing CrashPlan</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/a-plan-for-un-crashing-crashplan.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/a-plan-for-un-crashing-crashplan.html"/>
         
 		<updated>2014-11-13T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/a-plan-for-un-crashing-crashplan.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/a-plan-for-un-crashing-crashplan.html</id>
 		<content type="html">&lt;p&gt;CrashPlan is by far my favorite tool for backing up my computers. I&amp;#39;m never able or willing to plug my laptop in to my backup harddrive for long enough for Time Machine to do its job, all of attempts to make Time Machine work over the network (proxied through my always-on desktop) failed. I&amp;#39;m not rich enough to go around buying Apple&amp;#39;s Time Capsules or Airport Extremes (I save my money to buy all of Apple&amp;#39;s &lt;em&gt;other&lt;/em&gt; hardware). CrashPlan, on the other hand, has been a great solution because it actually does a good job of backing up over the internet and I can backup between machines that I own at different sites &lt;em&gt;for free&lt;/em&gt;. However, I&amp;#39;ve been having problems getting the CrashPlan UI App working for a while.&lt;/p&gt;
 
 &lt;p&gt;CrashPlan&amp;#39;s documentation was largely unhelpful for diagnosing my problem, so here&amp;#39;s some things that I learned and what to look for if you&amp;#39;re experiencing similar problems.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-error&quot;&gt;The error:&lt;/h2&gt;
 
-&lt;p&gt;&lt;img class=&quot;center-block&quot; src=&quot;/~bholt/img/crashplan_crash.png&quot; alt=&quot;Crash Plan Error Message&quot;/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;center-block&quot; src=&quot;/img/crashplan_crash.png&quot; alt=&quot;Crash Plan Error Message&quot;/&gt;&lt;/p&gt;
 
 &lt;p&gt;In my case, not only was the main CrashPlan app unable to connect to the service, but the CrashPlan MenuBar icon was also greyed out and said it couldn&amp;#39;t connect to the backup service.&lt;/p&gt;
 
@@ -732,10 +732,10 @@ sudo launchctl load /Library/LaunchDaemons/com.crashplan.engine.plist
 	<entry>
         
             <title>⚗ Alembic</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/alembic-appearing-at-oopsla14.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/alembic-appearing-at-oopsla14.html"/>
         
 		<updated>2014-08-16T00:00:00-07:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/alembic-appearing-at-oopsla14.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/alembic-appearing-at-oopsla14.html</id>
 		<content type="html">&lt;p&gt;One of the hardest parts about writing distributed applications is locality: where to put the data, how to access it, and where to perform computation to minimize how much data must be moved. My new &lt;a href=&quot;http://sampa.cs.washington.edu/papers/oopsla14-alembic.pdf&quot;&gt;paper&lt;/a&gt;, to appear at &lt;a href=&quot;http://2014.splashcon.org/track/oopsla2014&quot;&gt;OOPSLA&amp;#39;14&lt;/a&gt; in October, describes a compiler analysis called Alembic which helps distributed application programmers deal with locality by making threads migrate to the data they use automatically.&lt;/p&gt;
 
 &lt;h3 id=&quot;traditional-distributed-shared-memory-model&quot;&gt;Traditional distributed shared memory model&lt;/h3&gt;
@@ -760,10 +760,10 @@ This means that programmers need not worry about where their data is when they a
 	<entry>
         
             <title>Git Reflog</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/git-reflog.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/git-reflog.html"/>
         
 		<updated>2014-02-12T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/git-reflog.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/git-reflog.html</id>
 		<content type="html">&lt;p&gt;This is actually a really simple tip. But I went quite a while using Git before learning this secret. The moral of the story is that Git, while it has one of the worst, most unintuitive command-line interfaces ever, really does save &lt;em&gt;almost everything&lt;/em&gt; (okay, the one exception I can still think of is doing a &lt;code&gt;git checkout&lt;/code&gt; and losing uncommitted changes).&lt;/p&gt;
 
 &lt;p&gt;Here&amp;#39;s the situation I&amp;#39;ve found myself in countless times: I merged a branch, went through a bunch of hassle fixing conflicts, only to realize after I committed the merge that I had either merged the wrong branch, or had resolved conflicts the wrong way. This is actually not the end of the world. It&amp;#39;s fairly straightforward to fix. Just find the last commit before the merge, and hard-reset the branch back to there:&lt;/p&gt;
@@ -860,10 +860,10 @@ d92be50 HEAD@&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;4&lt;span class=&quot
 	<entry>
         
             <title>Quick LLVM Tricks</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/llvm-quick-tricks.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/llvm-quick-tricks.html"/>
         
 		<updated>2014-01-30T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/llvm-quick-tricks.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/llvm-quick-tricks.html</id>
 		<content type="html">&lt;h2 id=&quot;registering-passes-automatically&quot;&gt;Registering passes automatically.&lt;/h2&gt;
 
 &lt;p&gt;My colleague &lt;a href=&quot;http://homes.cs.washington.edu/%7Easampson&quot;&gt;Adrian Sampson&lt;/a&gt; showed me a really good trick for running LLVM passes automatically, and luckily he wrote a really nice &lt;a href=&quot;http://homes.cs.washington.edu/%7Easampson/blog/clangpass.html&quot;&gt;blog post about it&lt;/a&gt;.&lt;/p&gt;
@@ -961,10 +961,10 @@ d92be50 HEAD@&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;4&lt;span class=&quot
 	<entry>
         
             <title>LLVM Command line options</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/llvm-commandline.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/llvm-commandline.html"/>
         
 		<updated>2014-01-30T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/llvm-commandline.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/llvm-commandline.html</id>
 		<content type="html">&lt;h2 id=&quot;command-line-options&quot;&gt;Command-line options&lt;/h2&gt;
 
 &lt;p&gt;Okay, command-line flags are not the most exiting topic ever. But, potentially pretty useful when you&amp;#39;re making a complicated pass and want to &lt;a href=&quot;http://github.com/bholt/igor&quot;&gt;experiment&lt;/a&gt; with a bunch of different options. And I just have to say, this is some absolutely stunning C++ magic. I thought how LLVM smoothly handles strings with StringRef/Twine was impressive, but this is on a whole new level. But we&amp;#39;ll start with the mundanes of actually using it in the simplest way possible.&lt;/p&gt;
@@ -1000,10 +1000,10 @@ d92be50 HEAD@&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;4&lt;span class=&quot
 	<entry>
         
             <title>Building LLVM on OSX</title>
-            <link href="http://homes.cs.washington.edu/~bholt//~bholt/posts/building-llvm.html"/>
+            <link href="http://homes.cs.washington.edu/~bholt//posts/building-llvm.html"/>
         
 		<updated>2014-01-29T00:00:00-08:00</updated>
-        <id>http://homes.cs.washington.edu/~bholt//~bholt/posts/building-llvm.html</id>
+        <id>http://homes.cs.washington.edu/~bholt//posts/building-llvm.html</id>
 		<content type="html">&lt;p&gt;I&amp;#39;ve had a lot of headaches building LLVM from source to suit my purposes. It&amp;#39;s fairly straightforward to download a source distribution and get &lt;em&gt;something&lt;/em&gt; built, but I&amp;#39;ve had to refine how I build LLVM so that things are setup to be useful for my workflow. Namely, I need:&lt;/p&gt;
 
 &lt;ul&gt;

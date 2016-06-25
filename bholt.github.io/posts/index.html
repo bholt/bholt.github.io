@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — Posts</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Posts">
+        <meta name="twitter:description" content="Potentially-helpful tidbits I've learned or made up.">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        <link href="/~bholt/rss.xml" rel="alternate" type="application/rss+xml" title="Brandon Holt's (Public) Musings" />
+
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link active" href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>Musings
+  <a href="/~bholt/rss.xml" title="Subscribe via RSS (if you must)&#013;It'd be more fun if you followed me on Twitter. 😉" >
+    <img id="feed-icon" src="/~bholt/img/feed-icon.svg" alt="RSS Feed"/>
+  </a>
+</h1>
+
+<ul class="media-list">
+
+    
+        <!-- <li class="shortnews">
+            <span class="date">06 June 2016</span>
+            <p>Our full-length paper on <a href="http://sampa.cs.washington.edu/projects/disciplined-inconsistency.html">Disciplined Inconsistency</a>, currently in submission, is now available as a <a href="http://bholt.github.io/gen/ipa-tr.pdf">tech report</a>.</p>
+
+        </li> -->
+    
+
+    
+        <!-- <li class="shortnews">
+            <span class="date">15 December 2015</span>
+            <p>I passed my Generals exam and am now a real PhD candidate! The unusually curious can check out my generals document on <a href="/%7Ebholt/files/generals.html">Mitigating Contention in Distributed Systems</a>.</p>
+
+        </li> -->
+    
+
+    
+        <!-- <li class="shortnews">
+            <span class="date">04 August 2015</span>
+            <p>I am <a href="https://www.cs.washington.edu/sites/default/files/education/time-sched/teaching2015-2016.html">officially</a> teaching CSE 351 (Hardware/Software Interface) next <strike>Winter</strike> Spring quarter. This is the first time you get to see end-to-end how computers actually run programs — so excited to teach it!</p>
+
+        </li> -->
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/llvm-debugging.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    LLVM Debugging Tips and Tricks
+                  <div class="date text-muted pull-right small">
+                    03 August 2015
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                LLVM is a fantastic tool for anyone interested in developing languages, optimizing their code, or even developing first-order architectural simulations. Part of what makes it so great is the wealth of great tools that come with it to help develop and debug passes. Unfortunately not all of them are very well-documented and many are not widely known. In this post I'll describe a few that I stumbled upon which may prove useful — things like printing all the basicblocks/instructions of a function, or inspecting successor/predecessor chains from the debugger (lldb).
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/disciplined-inconsistency.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Disciplined Inconsistency
+                  <div class="date text-muted pull-right small">
+                    03 May 2015
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                Using weak consistency models is tough, but sometimes necessary for scaling. Many apps can tolerate some inconsistency, but it's difficult to ensure the parts that need to be correct stay consistent. Disciplined inconsistency aims to help programmers choose where and how much they can tolerate inconsistency, but there's more than one way of looking at error tolerance, depending on what your application needs.
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/papoc-musings.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Musings from PaPoC
+                  <div class="date text-muted pull-right small">
+                    29 April 2015
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                I had the privilege of presenting some of my work to many similarly-minded researchers at the PaPoC workshop last week. I got some great ideas from hearing about other relevant ongoing work and from insightful conversations with people there.
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <!-- <li class="shortnews">
+            <span class="date">24 April 2015</span>
+            <p>Presented <a href="projects/claret.html">Claret</a> at <a href="http://papoc.di.uminho.pt">PaPoC</a> workshop and <a href="http://eurosys2015.labri.fr">EuroSys</a> poster session. Got some fantastic feedback, watch for followup posts as I sort through it all.</p>
+
+        </li> -->
+    
+
+    
+        <!-- <li class="shortnews">
+            <span class="date">13 March 2015</span>
+            <p>I will be on the <a href="http://2015.splashcon.org/track/splash2015-artifacts">2015 OOPSLA Artifact Evaluation Committee</a>.</p>
+
+        </li> -->
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/scholarly-markdown.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Scholarly markdown (with R) for fun and (non-monetary) profit
+                  <div class="date text-muted pull-right small">
+                    24 February 2015
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                We need ways to lower the barrier to writing up in-progress research, making it easier to explore data in the process of sharing your findings. I've pulled together some tools that use Markdown for writing and generate plots inline to make it easy to generate both webpages and conference submissions.
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/simulating-an-interactive-twitter-workload.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Simulating an interactive Twitter workload
+                  <div class="date text-muted pull-right small">
+                    18 February 2015
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                My latest project has led me to try to simulate workloads from real-world social networks. Starting from Graph500's Kronecker graph and integrating with Retwis, with a sprinkle of my own retweet behavior, I came up with something that works for me that I thought I'd share.
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/a-plan-for-un-crashing-crashplan.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    A plan for un-crashing CrashPlan
+                  <div class="date text-muted pull-right small">
+                    13 November 2014
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                Some tricks for fixing CrashPlan's "unable to connect to backup service" error on Yosemite.
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/alembic-appearing-at-oopsla14.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    ⚗ Alembic: 
+                    <small>Distilling C++ into high-performance Grappa</small>
+                  <div class="date text-muted pull-right small">
+                    16 August 2014
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                One of the hardest parts about writing distributed applications is locality — this compiler analysis automatically transforms threads to migrate to the data they access, minimizing communication and improving overall performance.
+
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/git-reflog.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Git Reflog
+                  <div class="date text-muted pull-right small">
+                    12 February 2014
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                Ever screw up a rebase and lose your branch? Ever wish you could easily undo that nightmare of a merge? This trick will let you undo the worst kind of errors: version control mess-ups.
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/llvm-quick-tricks.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Quick LLVM Tricks
+                  <div class="date text-muted pull-right small">
+                    30 January 2014
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                Reiterating a trick I learned for registering LLVM passes automatically with Clang, and some other gems.
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/llvm-commandline.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    LLVM Command line options
+                  <div class="date text-muted pull-right small">
+                    30 January 2014
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                LLVM trick bonus round — command-line options. Admittedly dull-sounding but some serious C++ magic.
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+    
+        <li class="media">
+          <a href="/~bholt/posts/building-llvm.html">
+            <div class="card link">
+              <div class="card-block">
+                <h4 class="card-title">
+                    Building LLVM on OSX
+                  <div class="date text-muted pull-right small">
+                    29 January 2014
+                  </div>
+                </h4>
+              </div>
+              <div class="card-footer">
+                Notes from how I've built LLVM to be most useful for me (and maybe for you, too).
+              </div>
+            </div>
+          </a>
+        </li>
+    
+
+</ul>
+
+
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — Musings from PaPoC</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Musings from PaPoC">
+        <meta name="twitter:description" content="I had the privilege of presenting some of my work to many similarly-minded researchers at the PaPoC workshop last week. I got some great ideas from hearing about other relevant ongoing work and from insightful conversations with people there.
+">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1 id="papoc-musings">Papoc Musings</h1>
+
+<p><img src="/~bholt/img/papoy.jpg" class="pull-right" alt="Papoy!" /></p>
+
+<p>The Workshop on Principles and Practice of Consistency (PaPoC) was co-located with EuroSys and took place the day before the conference proper began. This is the second year of the workshop, though my first time — slightly re-branded from last year that explicitly focused on <em>eventual consistency</em> — this year the call more broadly encouraged discussions about consistency models for distributed systems. This seemed like a good fit for some of my Claret work on using data types in distributed data stores, though I think <a href="https://news.cs.washington.edu/2014/12/05/cse-holiday-party-2014/">Luis</a> was mostly behind the idea because he thought it sounded like <a href="https://news.cs.washington.edu/2014/12/05/cse-holiday-party-2014/">&quot;Papoy!&quot;</a>.</p>
+
+<p>As it turns out, PaPoC was a fantastic choice for getting early feedback and ideas — I found many people with similar experience and interests at the workshop, particularly on CRDTs (Conflict-free/Commutative/Convergent Replicated Data Types) and lots of exciting ways of using them that I hadn&#39;t thought about before.</p>
+
+<h2 id="riak">Riak</h2>
+
+<p><img src="/~bholt/img/riak-logo.png" class="pull-right" alt="Riak logo" /></p>
+
+<p><a href="http://basho.com/riak">Riak</a> is an eventually-consistent key-value store developed and maintained by <a href="http://basho.com">Basho Technologies</a>. It&#39;s already shown up on my radar as a key-value store that supports complex data types — <a href="http://docs.basho.com/riak/latest/theory/concepts/crdts/">CRDTs</a>. Built-in CRDTs include Counters (&quot;Registers&quot;), Flags (Maps with 1-bit values), Sets, and Maps (whose values can recursively be CRDTs). Riak developed these data types to help users wrangle with eventual consistency and build complex applications with fewer bugs. From the PaPoC attendees, it sounds like these CRDTs are being adopted by at least some of the users of Riak (it&#39;d be cool to find some actual numbers).</p>
+
+<p>What&#39;s even more useful about Riak is that it has been developed very modularly, with all of its components developed in the open on Github. These components include:</p>
+
+<ul>
+<li><a href="https://github.com/basho/riak_core">riak_core</a>: handles various distributed tasks, such as cluster membership, partitioning, and liveness.</li>
+<li> <a href="https://github.com/basho/riak_kv">riak_kv</a>: simple key-value store built on riak_core.</li>
+<li> <a href="https://github.com/basho/riak_ensemble">riak_ensemble</a>: implementation of Multi-Paxos (consensus groups) to enable consistent operations to be performed, which could in theory be used to implement full distributed transactions.</li>
+</ul>
+
+<p>Based on this, I might look into implementing some of my recent work on top of Riak, instead of Redis as I had planned.</p>
+
+<h2 id="syncfree-project">SyncFree Project</h2>
+
+<p>Many of the attendees and organizers of PaPoC are involved in a big EU project related to scalable distributed systems called SyncFree. For my purposes, what is interesting is that it&#39;s a consortium of many universities and industry partners focused around improving the state-of-the-art in distributed programming models, data storage systems, and mobile platforms, and they seem to have taken a particular stance which leans heavily toward <em>eventual consistency</em> as necessary for providing high availability and scalability, for geo-replication as well as intermittently-connected mobile devices.</p>
+
+<p>What&#39;s even better than a bunch of researchers thinking about distributed programming models? A group of researchers <em>cooperating to create shared software infrastructure to do it.</em> I don&#39;t think there&#39;s necessarily an explicit need to build systems that integrate with each other, but due to all of the cross-pollination between groups, many have coalesced around similar systems. I saw many presentations about systems built using various open source components from Riak. Some of these are grouped together in a project on Github called <a href="https://github.com/SyncFree/antidote">Antidote</a>, a CRDT-based key-value store.</p>
+
+<h3 id="benchmark-apps">Benchmark apps</h3>
+
+<p>Rovio is one of the industry partners of SyncFree, and my understanding is that they have contributed a benchmark application that involves synchronizing game state between multiple mobile devices and the cloud. I will have to look into this more, but I think it&#39;s really awesome to have a simple end-to-end application that can be used to evaluate research but also provide a nice demo to help explain (<em>and sell!</em>) the work.</p>
+
+<h2 id="crdts-for-offline-and-mobile">CRDTs for Offline and Mobile</h2>
+
+<p>Have you ever been sitting in the same room with a bunch of colleagues, all of you concurrently editing the same Google Doc? Well those of us in the <a href="http://sampa.cs.washington.edu/">Sampa</a> lab at UW do. The first weekly meeting of each quarter we do &quot;2-minute madness&quot; (lightning talks) where everyone ostensibly presents what they&#39;re working on right now in — you guessed it — two minutes or less, presented from a shared Google Slides presentation for convenience. In reality, the majority ends up being bobble-head photoshop work, inside jokes, and prank slides added at the last minute.</p>
+
+<p><img src="/%7Ebholt/img/spampa-lightning.png" alt="Sampa joke slide"></p>
+
+<p>Now imagine the worst: all of us are in the same room, collaborating on this super crucial task, and the network goes down. Suddenly, even though we all have the slides, and all of our machines are still Wifi-capable, we suddenly are stuck in our own worlds, editing separate copies of the slides, so the version being presented is, sadly devoid of prank slides — err, I mean exciting new research.</p>
+
+<p>Wouldn&#39;t it make much more sense that all of us still connected to each other can still continue to collaborate? This particular example may not overly concern you, but I actually have been in situations where I wanted to work on a document with other people and our internet kept going down, so Google Docs was a pain. Furthermore, there are countless other situations where offline coordination between devices is desired, such as ad-hoc networks used to aid relief efforts after a disaster takes out wireless infrastructure.</p>
+
+<p>Luckily some of the people at PaPoC are interested in helping all of these scenarios, and as with most things at this workshop, the solution is — CRDTs! Seriously though, it&#39;s pretty great. The poster child app so far for CRDTs has been collaborative text editing.</p>
+
+<h3 id="offline-collaboration">Offline collaboration</h3>
+
+<p>Santiago Castiñeira presented his work, <a href="http://dl.acm.org/citation.cfm?id=2745952">Collaborative offline web applications using conflict-free replicated data types</a>, where he laid out these kinds of scenarios, showed that CRDTs are a natural fit, and explored various communication protocols for keeping them in sync with each other. Santiago built his system for Chrome specifically in order to be able to implement the peer-to-peer features. It would be really cool if one of the web standards like WebRTC supported connecting directly between already-known devices while offline.</p>
+
+<h3 id="internet-of-intermittently-connected-things">Internet of Intermittently Connected Things</h3>
+
+<p>I had other conversations with people at the workshop about the applying CRDTs for the &quot;Internet of Things&quot; (we&#39;re all suitably embarrassed to use the buzzword, but still excited). When devices go offline for any number of reasons, they tend to end up diverging much more from each other than typical even for geo-replicated data storage. First of all, this is cool in the context of the low-power energy-harvesting devices, which I hear a good deal about from my <a href="http://homes.cs.washington.edu/%7Eamrita/">current</a>, <a href="http://ben.ransford.org/">recently former</a> and <a href="http://brandonlucia.com/">less recently former</a> colleagues.</p>
+
+<p>Intermittent connectivity poses serious problems when trying to make good merge decisions, causing many applications to resort to asking users what they want to do. I think it would be cool to explore more ways of pushing the semantics of the task down into the merge operations in these scenarios. For instance, if collaborating on source code, choose to merge syntactically. As an aside, I&#39;d also like this in the ultimate intermittently connected collaboration situation: <a href="http://homes.cs.washington.edu/%7Ebpw/cs/dvcs-for-advisors/">git with advisors</a>. Both of these also relate to other work I just learned about by <a href="http://www.mpi-sws.org/%7Encrooks/">Natacha Crooks</a> and <a href="http://www.mpi-sws.org/%7Eaclement/">Allen Clement</a> called TARDiS, which helps deal with merging changes on replicated eventually consistent data by providing diffs of the state to the merge functions, allowing more complex semantic reasoning to take place.</p>
+
+<h2 id="lvars-and-alternative-perspectives">LVars and alternative perspectives</h2>
+
+<p>This wasn&#39;t a paper at PaPoC, but <a href="http://christophermeiklejohn.com/">Chris Meiklejohn</a> mentioned the work in his talk on <a href="https://github.com/cmeiklejohn/lasp">Lasp</a>, and luckily its creator, Lindsey Kuper (<a href="https://twitter.com/lindsey">@lindsey</a>) was attending PaPoC and EuroSys so I got plenty of time to learn more directly from her.</p>
+
+<p>In the area of deterministic multiprocessing, there is a concept of single-assignment variables, or <em>I-Vars</em>, that are very nice for ensuring safety when sharing data between threads. <em><a href="http://www.cs.indiana.edu/%7Elkuper/papers/lvars-fhpc13.pdf">LVars</a></em> extend this notion with a more general model for sharing data by ensuring that only <em>commutative</em> operations that grow the data <em>monotonically</em> are allowed. Because threads are only allowed to <em>add</em> information to these shared systems, it is possible to ensure that regardless of the order in which they execute, they will always come up with the same externally visible results.</p>
+
+<p>LVars have a lot in common with CRDTs — both enforce that only commuting operations are allowed, and the rely on always <em>adding</em> information (for example, removing elements typically means marking them as removed rather than deleting them so that we keep record of the fact that the element existed). However, the design and features of LVars are different, reflecting the different set of concerns of a deterministic programming perspective:  <em>LVars focus on ensuring correctness where CRDTs focus on availability</em>. The write operations for CRDTs are meant to be asynchronous — the user, operating with an assumption of eventual consistency, is ostensibly alright without blocking until the operation finishes, and similarly, reads are intended to occur on whatever replica is closest or most available; how up-to-date it is typically isn&#39;t a concern. So you typically get semantics that are quite non-deterministic, but at least provide some notion of atomicity and correctness — a read either comes before or after some set of updates — and which updates must be seen can be bounded, for instance, by causal consistency.</p>
+
+<p>On the other hand, LVars focus on ensuring determinism, and, though certainly applicable elsewhere, are designed for a multiprocessing model, which assumes all the processes are always easily reachable. This makes it so that, rather than returning an answer for reads as quickly as possible, LVars ensure a consistent view of the world by focusing on reads that block until certain preconditions are satisfied, such as waiting for a value to be added to a set.</p>
+
+<p>I think this is particularly interesting because I recently noticed a similar difference in perspective when talking about my plans for disciplined inconsistency with <a href="http://www.mpi-sws.org/%7Eaclement/">Allen Clement</a> at EuroSys. I&#39;ll save the full discussion of that to a later post, but the short version is that in his use cases, they need an answer within a certain time limit (or as fast as possible), and will just have to deal with whatever error arises from that. On the other hand, I was thinking of giving programmers hard bounds on the correctness of their values (i.e. &quot;the value will be within 5% of the correct value&quot;), but in order to <em>ensure</em> this the answer might be delayed, either by waiting until the error fell to within tolerable levels or forcing it to.</p>
+
+<p><hr></p>
+
+<p>This has been a bit of a brain dump and an exercise in drawing connections. Thank you to the organizers of PaPoC, especially <a href="https://twitter.com/xmal">Carlos Baquero</a> for creating a workshop where I could learn so much. I hope I haven&#39;t too poorly represented anyone&#39;s work here, and I apologize if I have, and would love to hear clarifications or thoughts on Twitter or via <a href="mailto:bholt@cs.uw.edu">email</a>.</p>
+
+<p><blockquote class="twitter-tweet" lang="en" data-cards="hidden"><p lang="en" dir="ltr">Learned a ton from chatting with the folks at PaPoC, here&#39;s my writeup (otherwise known as &quot;1001 ways to use CRDTs&quot;) <a href="http://t.co/2hQaHG8VHK">http://t.co/2hQaHG8VHK</a></p>&mdash; Brandon Holt (@holtbg) <a href="https://twitter.com/holtbg/status/593643055787352064">April 30, 2015</a></blockquote> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

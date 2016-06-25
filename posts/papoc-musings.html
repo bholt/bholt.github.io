@@ -13,16 +13,16 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="/~bholt/css/madoko.css" rel="stylesheet">
-        <link href="/~bholt/css/theme.css" rel="stylesheet">
-        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <link href="/css/madoko.css" rel="stylesheet">
+        <link href="/css/theme.css" rel="stylesheet">
+        <link href="/css/syntax.css" rel="stylesheet">
         <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
 
         
@@ -46,7 +46,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/">
+                  <a class="nav-link " href="/">
                     Home
                   </a>
                 </li>
@@ -54,7 +54,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/projects/">
+                  <a class="nav-link " href="/projects/">
                     Projects
                   </a>
                 </li>
@@ -62,7 +62,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/cv.html">
+                  <a class="nav-link " href="/cv.html">
                     CV
                   </a>
                 </li>
@@ -70,7 +70,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/posts/">
+                  <a class="nav-link " href="/posts/">
                     Posts
                   </a>
                 </li>
@@ -97,7 +97,7 @@
 
           <h1 id="papoc-musings">Papoc Musings</h1>
 
-<p><img src="/~bholt/img/papoy.jpg" class="pull-right" alt="Papoy!" /></p>
+<p><img src="/img/papoy.jpg" class="pull-right" alt="Papoy!" /></p>
 
 <p>The Workshop on Principles and Practice of Consistency (PaPoC) was co-located with EuroSys and took place the day before the conference proper began. This is the second year of the workshop, though my first time — slightly re-branded from last year that explicitly focused on <em>eventual consistency</em> — this year the call more broadly encouraged discussions about consistency models for distributed systems. This seemed like a good fit for some of my Claret work on using data types in distributed data stores, though I think <a href="https://news.cs.washington.edu/2014/12/05/cse-holiday-party-2014/">Luis</a> was mostly behind the idea because he thought it sounded like <a href="https://news.cs.washington.edu/2014/12/05/cse-holiday-party-2014/">&quot;Papoy!&quot;</a>.</p>
 
@@ -105,7 +105,7 @@
 
 <h2 id="riak">Riak</h2>
 
-<p><img src="/~bholt/img/riak-logo.png" class="pull-right" alt="Riak logo" /></p>
+<p><img src="/img/riak-logo.png" class="pull-right" alt="Riak logo" /></p>
 
 <p><a href="http://basho.com/riak">Riak</a> is an eventually-consistent key-value store developed and maintained by <a href="http://basho.com">Basho Technologies</a>. It&#39;s already shown up on my radar as a key-value store that supports complex data types — <a href="http://docs.basho.com/riak/latest/theory/concepts/crdts/">CRDTs</a>. Built-in CRDTs include Counters (&quot;Registers&quot;), Flags (Maps with 1-bit values), Sets, and Maps (whose values can recursively be CRDTs). Riak developed these data types to help users wrangle with eventual consistency and build complex applications with fewer bugs. From the PaPoC attendees, it sounds like these CRDTs are being adopted by at least some of the users of Riak (it&#39;d be cool to find some actual numbers).</p>
 
@@ -133,7 +133,7 @@
 
 <p>Have you ever been sitting in the same room with a bunch of colleagues, all of you concurrently editing the same Google Doc? Well those of us in the <a href="http://sampa.cs.washington.edu/">Sampa</a> lab at UW do. The first weekly meeting of each quarter we do &quot;2-minute madness&quot; (lightning talks) where everyone ostensibly presents what they&#39;re working on right now in — you guessed it — two minutes or less, presented from a shared Google Slides presentation for convenience. In reality, the majority ends up being bobble-head photoshop work, inside jokes, and prank slides added at the last minute.</p>
 
-<p><img src="/%7Ebholt/img/spampa-lightning.png" alt="Sampa joke slide"></p>
+<p><img src="/img/spampa-lightning.png" alt="Sampa joke slide"></p>
 
 <p>Now imagine the worst: all of us are in the same room, collaborating on this super crucial task, and the network goes down. Suddenly, even though we all have the slides, and all of our machines are still Wifi-capable, we suddenly are stuck in our own worlds, editing separate copies of the slides, so the version being presented is, sadly devoid of prank slides — err, I mean exciting new research.</p>
 
@@ -180,10 +180,10 @@
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
       <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
-      <script src="/~bholt/js/bootstrap.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
 
       <!-- support retina -->
-      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+      <script type="text/javascript" src="/js/srcset-polyfill.js"></script>
 
     </body>
 </html>

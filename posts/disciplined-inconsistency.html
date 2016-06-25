@@ -13,16 +13,16 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="/~bholt/css/madoko.css" rel="stylesheet">
-        <link href="/~bholt/css/theme.css" rel="stylesheet">
-        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <link href="/css/madoko.css" rel="stylesheet">
+        <link href="/css/theme.css" rel="stylesheet">
+        <link href="/css/syntax.css" rel="stylesheet">
         <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
 
         
@@ -46,7 +46,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/">
+                  <a class="nav-link " href="/">
                     Home
                   </a>
                 </li>
@@ -54,7 +54,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/projects/">
+                  <a class="nav-link " href="/projects/">
                     Projects
                   </a>
                 </li>
@@ -62,7 +62,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/cv.html">
+                  <a class="nav-link " href="/cv.html">
                     CV
                   </a>
                 </li>
@@ -70,7 +70,7 @@
                 
                 <li class="nav-item">
                   
-                  <a class="nav-link " href="/~bholt/posts/">
+                  <a class="nav-link " href="/posts/">
                     Posts
                   </a>
                 </li>
@@ -118,7 +118,7 @@
 <p class="p noindent" data-line="35"><span data-line="35"></span>If you<span data-line="35"></span>&#39;<span data-line="35"></span>ve heard me speak at all in the last, hmm, half a year at least, then you<span data-line="35"></span>&#39;<span data-line="35"></span>ve probably heard me use this example, but just in case, I<span data-line="35"></span>&#39;<span data-line="35"></span>ll review it quickly here. <span data-line="35"></span><em class="em-star1">Retwis</em><span data-line="35"></span> is a Twitter clone built on Redis using its support for data structures. This is great because it means instead of using just keys and values, we can work with data structures like lists and sets. For this example, all that<span data-line="35"></span>&#39;<span data-line="35"></span>s important is that we keep track of all the users who have retweeted a post with a <span data-line="35"></span><code class="code code1">Set</code><span data-line="35"></span>.
 </p>
 <figure class="fig align-center" data-line="37" style="text-align:center">
-<p class="p noindent" data-line="38"><span data-line="38"></span><img src="/~bholt/img/retwis-overview.png" alt="diagram of retweet set" data-path="/~bholt/img/retwis-overview.png"><span data-line="38"></span>
+<p class="p noindent" data-line="38"><span data-line="38"></span><img src="/img/retwis-overview.png" alt="diagram of retweet set" data-path="/img/retwis-overview.png"><span data-line="38"></span>
 </p>
 <div class="p indent" data-line="40"><span data-line="40"></span><fig-caption class="figure-caption"><span class="caption-before"><strong class="strong-star2">Figure <span class="figure-label">1</span>.</strong> </span>Retwis: Twitter clone built with Redis-like data types.</fig-caption></div></figure>
 <p class="p noindent" data-line="41"><span data-line="41"></span>To retweet the post, users add themselves to the set.
@@ -142,7 +142,7 @@
 </p><h3 id="sec-error-tolerance" class="h2" data-line="66" data-heading-depth="2" style="display:block"><span data-line="66"></span>Error Tolerance</h3>
 <p class="p noindent" data-line="68"><span data-line="68"></span>Wouldn<span data-line="68"></span>&#39;<span data-line="68"></span>t it be nice to have some idea what the error is? Rather than simply accepting that it could be arbitrarily wrong but probably won<span data-line="68"></span>&#39;<span data-line="68"></span>t be, what if we could ensure that the error fit within some acceptable range? What if we could tailor this error tolerance based on exactly how we use the value. For instance, in Twitter, we have a pretty well-defined notion of what is acceptable: <span data-line="68"></span><em class="em-star1">what is displayed to the user</em><span data-line="68"></span>.
 </p>
-<p class="p indent" data-line="70"><span data-line="70"></span><img src="/~bholt/img/retwis-me-vs-ellen.png" alt="My tweet vs Ellen&#39;s tweet" data-path="/~bholt/img/retwis-me-vs-ellen.png"><span data-line="70"></span>
+<p class="p indent" data-line="70"><span data-line="70"></span><img src="/img/retwis-me-vs-ellen.png" alt="My tweet vs Ellen&#39;s tweet" data-path="/img/retwis-me-vs-ellen.png"><span data-line="70"></span>
 </p>
 <p class="p indent" data-line="72"><span data-line="72"></span>For tweets like Ellen<span data-line="72"></span>&#39;<span data-line="72"></span>s Oscar selfie, we truncate it to a couple significant figures, so the count can be off by hundreds of thousands and still come out the same. Meanwhile my tweet, which has been retweeted 2 times (a lot for me), better have exactly the right answer otherwise I<span data-line="72"></span>&#39;<span data-line="72"></span>ll know (because one of them is probably my mother, who called to tell me she retweeted it).
 </p>
@@ -206,10 +206,10 @@
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
       <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
-      <script src="/~bholt/js/bootstrap.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
 
       <!-- support retina -->
-      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+      <script type="text/javascript" src="/js/srcset-polyfill.js"></script>
 
     </body>
 </html>

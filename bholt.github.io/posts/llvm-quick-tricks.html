@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — Quick LLVM Tricks</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Quick LLVM Tricks">
+        <meta name="twitter:description" content="Reiterating a trick I learned for registering LLVM passes automatically with Clang, and some other gems.">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>Quick LLVM Tricks <small></small></h1>
+
+<p class="text-muted">30 Jan 2014</p>
+
+<div class="post">
+<h2 id="registering-passes-automatically">Registering passes automatically.</h2>
+
+<p>My colleague <a href="http://homes.cs.washington.edu/%7Easampson">Adrian Sampson</a> showed me a really good trick for running LLVM passes automatically, and luckily he wrote a really nice <a href="http://homes.cs.washington.edu/%7Easampson/blog/clangpass.html">blog post about it</a>.</p>
+
+<p>I won&#39;t steal his thunder, but I will just mention that this has come in handy for me. And because my project uses C++11 throughout, I thought I&#39;d point out that you can make it ever-so-slightly prettier with a lambda which is automatically coerced to a function pointer:</p>
+
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="c1">/////////////////////////////////////////////////////////////////////////
+// Register as default pass, to run before any other optimization passes
+</span><span class="k">static</span> <span class="n">RegisterStandardPasses</span> <span class="nf">MyPassRegistration</span><span class="p">(</span><span class="n">PassManagerBuilder</span><span class="o">::</span><span class="n">EP_EarlyAsPossible</span><span class="p">,</span>
+  <span class="p">[](</span><span class="k">const</span> <span class="n">PassManagerBuilder</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">PassManagerBase</span><span class="o">&amp;</span> <span class="n">PM</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">errs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"Registered pass!</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">PM</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="k">new</span> <span class="n">MyPass</span><span class="p">());</span>
+  <span class="p">});</span>
+</code></pre></div>
+
+<p>And then to run, simply tell clang to load your shared library (arguments to be passed to clang need to be prefaced with <code>-Xclang</code>):</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>clang++ -Xclang -load -Xclang /path/to/LLVMMyPass.so
+</code></pre></div>
+
+<h2 id="quot-easy-quot-function-annotations">&quot;Easy&quot; function annotations</h2>
+
+<p>Here&#39;s a way to get arbitrary annotations on functions down into your LLVM pass. GCC has long had this &quot;annotate&quot; attribute that allows arbitrary strings to be attached to things like variable declarations and functions, and Clang supports the same syntax. Adding the attribute looks like this:</p>
+
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="n">__attribute__</span><span class="p">((</span><span class="n">annotate</span><span class="p">(</span><span class="s">"async"</span><span class="p">))</span> <span class="kt">void</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{}</span>
+</code></pre></div>
+
+<p>Clang generates LLVM IR for this annotation in kind of a funky way: it creates a new global variable with a list of tuples that encode the function pointer, annotation string, source file, and line number. But it&#39;s really opaque:</p>
+
+<div class="highlight"><pre><code class="language-llvm" data-lang="llvm"><span class="vg">@.str1</span> <span class="p">=</span> <span class="k">private</span> <span class="k">unnamed_addr</span> <span class="k">constant</span> <span class="p">[</span><span class="m">6</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]</span> <span class="s">c"async\00"</span><span class="p">,</span> <span class="k">section</span> <span class="s">"llvm.metadata"</span>
+<span class="vg">@.str2</span> <span class="p">=</span> <span class="k">private</span> <span class="k">unnamed_addr</span> <span class="k">constant</span> <span class="p">[</span><span class="m">39</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]</span> <span class="s">c"/Users/bholt/dev/test/async_finish.cpp\00"</span><span class="p">,</span> <span class="k">section</span> <span class="s">"llvm.metadata"</span>
+<span class="vg">@.str3</span> <span class="p">=</span> <span class="k">private</span> <span class="k">unnamed_addr</span> <span class="k">constant</span> <span class="p">[</span><span class="m">13</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]</span> <span class="s">c"hello again\0A\00"</span><span class="p">,</span> <span class="k">align</span> <span class="m">1</span>
+<span class="vg">@.str4</span> <span class="p">=</span> <span class="k">private</span> <span class="k">unnamed_addr</span> <span class="k">constant</span> <span class="p">[</span><span class="m">13</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]</span> <span class="s">c"hello world\0A\00"</span><span class="p">,</span> <span class="k">align</span> <span class="m">1</span>
+<span class="vg">@llvm.global.annotations</span> <span class="p">=</span> <span class="k">appending</span> <span class="k">global</span> <span class="p">[</span><span class="m">2</span> <span class="p">x</span> <span class="p">{</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i32</span> <span class="p">}]</span> <span class="p">[{</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i32</span> <span class="p">}</span> <span class="p">{</span> <span class="kt">i8</span><span class="p">*</span> <span class="k">bitcast</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="nv">%struct.Task</span><span class="p">*)*</span> <span class="vg">@"_ZNK4TaskIZ4mainE3$_1_0EclEv"</span> <span class="k">to</span> <span class="kt">i8</span><span class="p">*),</span> <span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">6</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str1</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">),</span> <span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">39</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str2</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">),</span> <span class="kt">i32</span> <span class="m">12</span> <span class="p">},</span> <span class="p">{</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i8</span><span class="p">*,</span> <span class="kt">i32</span> <span class="p">}</span> <span class="p">{</span> <span class="kt">i8</span><span class="p">*</span> <span class="k">bitcast</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="nv">%struct.Task.3</span><span class="p">*)*</span> <span class="vg">@"_ZNK4TaskIZ4mainE3$_0EclEv"</span> <span class="k">to</span> <span class="kt">i8</span><span class="p">*),</span> <span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">6</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str1</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">),</span> <span class="kt">i8</span><span class="p">*</span> <span class="k">getelementptr</span> <span class="k">inbounds</span> <span class="p">([</span><span class="m">39</span> <span class="p">x</span> <span class="kt">i8</span><span class="p">]*</span> <span class="vg">@.str2</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">,</span> <span class="kt">i32</span> <span class="m">0</span><span class="p">),</span> <span class="kt">i32</span> <span class="m">12</span> <span class="p">}],</span> <span class="k">section</span> <span class="s">"llvm.metadata"</span>
+</code></pre></div>
+
+<p>I worked through how to get the values out of here using a couple tricks. One is to get the C++ code to generate the IR you want.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>clang++ -emit-llvm -S foo.cpp
+<span class="gp">$ </span>llc -march<span class="o">=</span>cpp foo.ll -o ir_generator.cpp
+</code></pre></div>
+
+<p>Finally, I worked out which operands I wanted, which <code>Value*</code>&#39;s were <code>GlobalVariable</code> and which were <code>Constant*</code>, and ended up with:</p>
+
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="c1">//////////////////////////
+// Find 'task' functions
+</span><span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Function</span><span class="o">*&gt;</span> <span class="n">async_fns</span><span class="p">;</span>
+
+<span class="k">auto</span> <span class="n">global_annos</span> <span class="o">=</span> <span class="n">M</span><span class="p">.</span><span class="n">getNamedGlobal</span><span class="p">(</span><span class="s">"llvm.global.annotations"</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">global_annos</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">a</span> <span class="o">=</span> <span class="n">cast</span><span class="o">&lt;</span><span class="n">ConstantArray</span><span class="o">&gt;</span><span class="p">(</span><span class="n">global_annos</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">getNumOperands</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">e</span> <span class="o">=</span> <span class="n">cast</span><span class="o">&lt;</span><span class="n">ConstantStruct</span><span class="o">&gt;</span><span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">auto</span> <span class="n">fn</span> <span class="o">=</span> <span class="n">dyn_cast</span><span class="o">&lt;</span><span class="n">Function</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span> <span class="p">{</span>
+      <span class="k">auto</span> <span class="n">anno</span> <span class="o">=</span> <span class="n">cast</span><span class="o">&lt;</span><span class="n">ConstantDataArray</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cast</span><span class="o">&lt;</span><span class="n">GlobalVariable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">getAsCString</span><span class="p">();</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="n">anno</span> <span class="o">==</span> <span class="s">"async"</span><span class="p">)</span> <span class="p">{</span> <span class="n">async_fns</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">fn</span><span class="p">);</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><hr></p>
+
+<h4 id="edit-03-11-2014">Edit: <small>(03/11/2014)</small></h4>
+
+<p>I&#39;ve learned a new trick related to simple function annotations since writing the original post. LLVM supports adding named &quot;function attributes&quot; to the <code>llvm::Function</code> object. Rather than keeping track of a <code>std::set</code> of the functions with the attribute as above, you can instead do the following:</p>
+
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">auto</span> <span class="n">global_annos</span> <span class="o">=</span> <span class="n">M</span><span class="p">.</span><span class="n">getNamedGlobal</span><span class="p">(</span><span class="s">"llvm.global.annotations"</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">global_annos</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">a</span> <span class="o">=</span> <span class="n">cast</span><span class="o">&lt;</span><span class="n">ConstantArray</span><span class="o">&gt;</span><span class="p">(</span><span class="n">global_annos</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">getNumOperands</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">e</span> <span class="o">=</span> <span class="n">cast</span><span class="o">&lt;</span><span class="n">ConstantStruct</span><span class="o">&gt;</span><span class="p">(</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">auto</span> <span class="n">fn</span> <span class="o">=</span> <span class="n">dyn_cast</span><span class="o">&lt;</span><span class="n">Function</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span> <span class="p">{</span>
+      <span class="k">auto</span> <span class="n">anno</span> <span class="o">=</span> <span class="n">cast</span><span class="o">&lt;</span><span class="n">ConstantDataArray</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cast</span><span class="o">&lt;</span><span class="n">GlobalVariable</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">getOperand</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">getAsCString</span><span class="p">();</span>
+      <span class="n">fn</span><span class="p">.</span><span class="n">addFnAttr</span><span class="p">(</span><span class="n">anno</span><span class="p">);</span> <span class="c1">// &lt;-- add function annotation here
+</span>    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Then, in other code, you can check for the existence of this attribute simply:</p>
+
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="n">Function</span><span class="o">*</span> <span class="n">fn</span> <span class="o">:</span> <span class="n">module</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">fn</span><span class="o">-&gt;</span><span class="n">hasFnAttribute</span><span class="p">(</span><span class="s">"myattribute"</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">outs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">fn</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">" has my attribute!</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

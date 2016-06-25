@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — A plan for un-crashing CrashPlan</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="A plan for un-crashing CrashPlan">
+        <meta name="twitter:description" content="Some tricks for fixing CrashPlan's "unable to connect to backup service" error on Yosemite.
+">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>A plan for un-crashing CrashPlan <small></small></h1>
+
+<p class="text-muted">13 Nov 2014</p>
+
+<div class="post">
+<p>CrashPlan is by far my favorite tool for backing up my computers. I&#39;m never able or willing to plug my laptop in to my backup harddrive for long enough for Time Machine to do its job, all of attempts to make Time Machine work over the network (proxied through my always-on desktop) failed. I&#39;m not rich enough to go around buying Apple&#39;s Time Capsules or Airport Extremes (I save my money to buy all of Apple&#39;s <em>other</em> hardware). CrashPlan, on the other hand, has been a great solution because it actually does a good job of backing up over the internet and I can backup between machines that I own at different sites <em>for free</em>. However, I&#39;ve been having problems getting the CrashPlan UI App working for a while.</p>
+
+<p>CrashPlan&#39;s documentation was largely unhelpful for diagnosing my problem, so here&#39;s some things that I learned and what to look for if you&#39;re experiencing similar problems.</p>
+
+<h2 id="the-error">The error:</h2>
+
+<p><img class="center-block" src="/~bholt/img/crashplan_crash.png" alt="Crash Plan Error Message"/></p>
+
+<p>In my case, not only was the main CrashPlan app unable to connect to the service, but the CrashPlan MenuBar icon was also greyed out and said it couldn&#39;t connect to the backup service.</p>
+
+<h2 id="the-environment">The environment:</h2>
+
+<p>I have been seeing this from OSX Yosemite, but I did have a problem with this a while back on Mavericks, too, so this may be useful for both. For a while it was intermittent, solved by rebooting, but then it became a problem all the time.</p>
+
+<h2 id="the-solution-s">The solution(s):</h2>
+
+<p>CrashPlan&#39;s <a href="http://support.code42.com/CrashPlan/Latest/Troubleshooting/Unable_To_Connect_To_The_Backup_Engine">troubleshooting page</a> for this error had me try a bunch of things, to no avail. Partly, I think it is because of outdated commands for OSX.</p>
+
+<p><em>First of all</em>, restarting the service using <code>launchctl</code> didn&#39;t make any difference.</p>
+
+<p><em>Second</em>, it wasn&#39;t an <a href="http://support.code42.com/CrashPlan/Latest/Troubleshooting/CrashPlan_Runs_Out_Of_Memory_And_Crashes">out-of-memory crashing problem</a>, because the service was still running. To check, I did something like the following (from the Terminal):</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">&gt; ps aux | grep CrashPlan
+bholt           56615   0.0  1.9  6066736 155984   ??  S     4:24PM   0:20.74 /Applications/CrashPlan.app/Contents/MacOS/CrashPlan
+root            56587   0.0  0.8  3817772  68128   ??  SNs   4:24PM   0:11.25 /Applications/CrashPlan.app/Contents/MacOS/CrashPlanService -Dapp=CrashPlanService -Xmn10m -Xms15m -Xmx1024m -DappBaseName=CrashPlan -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -Dsun.net.inetaddr.ttl=300 -Dnetworkaddress.cache.ttl=300 -Dsun.net.inetaddr.negative.ttl=0 -Dnetworkaddress.cache.negative.ttl=0 -DCP_USER_NAME= -DCP_USER_HOME=/Users/bholt -cp lib/com.backup42.desktop.jar:lang com.backup42.service.CPService CP_USER_NAME= CP_USER_HOME=/Users/bholt
+bholt           56424   0.0  0.1   894428  11484   ??  SN    4:22PM   0:02.09 /Applications/CrashPlan.app/Contents/Helpers/CrashPlan menu bar.app/Contents/MacOS/CrashPlan menu bar
+bholt           59420   0.0  0.0  2451204    696 s006  S+    7:19PM   0:00.00 grep CrashPlan
+</code></pre></div>
+
+<p>You can clearly see the CrashPlanService, run by <code>root</code>, chugging along.</p>
+
+<p><em>Third</em>, I tried <a href="http://support.code42.com/CrashPlan/Latest/Troubleshooting/Known_Conflicts_With_The_CrashPlan_Application#Identify_Other_Port_Conflicts">checking the ports for conflicts</a>. <em>Spoiler:</em> turns out this was actually the problem, but their troubleshooting tips weren&#39;t helpful, because it turns out the ports were wrong, and the commands were wrong.</p>
+
+<p>They have you check which apps are using which ports with the command:</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">&gt; sudo lsof -i TCP:4243,4242
+&gt;
+</code></pre></div>
+
+<p>Which for me returned nil. I had to widen my search:</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">&gt; sudo lsof -i TCP | grep CrashPlan
+CrashPlan 56424  bholt   29u  IPv4 0x4c00d1e518e9c329      0t0  TCP localhost:64125-&gt;localhost:4243 (ESTABLISHED)
+CrashPlan 56424  bholt   30u  IPv4 0x4c00d1e518e9c329      0t0  TCP localhost:64125-&gt;localhost:4243 (ESTABLISHED)
+CrashPlan 56587   root   78u  IPv4 0x4c00d1e51a34efe9      0t0  TCP localhost:4200 (LISTEN)
+CrashPlan 56587   root   91u  IPv4 0x4c00d1e515ec1fe9      0t0  TCP localhost:4200-&gt;localhost:64125 (ESTABLISHED)
+CrashPlan 56587   root   92u  IPv4 0x4c00d1e5172918b9      0t0  TCP ###.###.###.###:64222-&gt;central.crashplan.com:https (ESTABLISHED)
+CrashPlan 56587   root   93u  IPv4 0x4c00d1e51584e4c9      0t0  TCP localhost:4243-&gt;localhost:64089 (ESTABLISHED)
+CrashPlan 56615  bholt   56u  IPv6 0x4c00d1e50ca3ed79      0t0  TCP localhost:64089-&gt;localhost:4243 (ESTABLISHED)
+</code></pre></div>
+
+<p>Here, I noticed that the CrashPlan service seemed to be trying to use <code>4200</code>, not <code>4234</code> or <code>4242</code>, which is why my other searches turned up nothing. </p>
+
+<p>I don&#39;t know how it happened that CrashPlan was using the wrong ports, but I was able to track down the offending settings that control the ports.</p>
+
+<p>The port the CrashPlan app uses can be controlled by the <code>servicePort</code> setting, but by default it is just set to 4243 (notice here it&#39;s commented out because it&#39;s using the default):</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">grep servicePort /Applications/CrashPlan.app/Contents/Resources/Java/conf/ui.properties
+# servicePort=4243
+</code></pre></div>
+
+<p>The CrashPlanService, on the other hand, is controlled by a <code>servicePort</code> setting in a different configuration file:</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">&gt; grep servicePort /Library/Application\ Support/CrashPlan/conf/my.service.xml
+    &lt;servicePort&gt;4200&lt;/servicePort&gt;
+</code></pre></div>
+
+<p>It looks like the MenuBar app was also assuming <code>4243</code>, so all I had to do was make sure that they all matched up, by editing the <code>my.service.xml</code> file. If you didn&#39;t know, you can open a file in its default editor with the <code>open</code> command:</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">open /Library/Application\ Support/CrashPlan/conf/my.service.xml
+# change line to: &lt;servicePort&gt;4243&lt;/servicePort&gt;
+</code></pre></div>
+
+<p>And then restart the CrashPlanService using <code>launchctl</code>:</p>
+
+<div class="highlight"><pre><code class="language-" data-lang="">sudo launchctl unload /Library/LaunchDaemons/com.crashplan.engine.plist
+sudo launchctl load /Library/LaunchDaemons/com.crashplan.engine.plist
+</code></pre></div>
+
+<p>And then everything has been hunky-dory since!</p>
+
+<p>Hope this helps someone else someday!</p>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>

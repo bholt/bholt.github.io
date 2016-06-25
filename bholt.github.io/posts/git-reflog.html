@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt — Git Reflog</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Git Reflog">
+        <meta name="twitter:description" content="Ever screw up a rebase and lose your branch? Ever wish you could easily undo that nightmare of a merge? This trick will let you undo the worst kind of errors: version control mess-ups.">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/~bholt/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,700italic,700|Anonymous+Pro' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/~bholt/css/madoko.css" rel="stylesheet">
+        <link href="/~bholt/css/theme.css" rel="stylesheet">
+        <link href="/~bholt/css/syntax.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=News+Cycle|Inconsolata' rel='stylesheet' type='text/css'> -->
+
+        
+
+    </head>
+    <body>
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-48525616-1', 'washington.edu');
+        ga('send', 'pageview');
+      </script>
+
+        <div class="container">
+          <div class="header">
+            <ul class="nav nav-pills pull-right">
+              
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/">
+                    Home
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/projects/">
+                    Projects
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/cv.html">
+                    CV
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="/~bholt/posts/">
+                    Posts
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://github.com/bholt">
+                    <i class="fa fa-github"></i>
+                  </a>
+                </li>
+              
+                
+                <li class="nav-item">
+                  
+                  <a class="nav-link " href="http://twitter.com/holtbg">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+              
+            </ul>
+            <h2>Brandon Holt</h2>
+          </div>
+
+          <h1>Git Reflog <small></small></h1>
+
+<p class="text-muted">12 Feb 2014</p>
+
+<div class="post">
+<p>This is actually a really simple tip. But I went quite a while using Git before learning this secret. The moral of the story is that Git, while it has one of the worst, most unintuitive command-line interfaces ever, really does save <em>almost everything</em> (okay, the one exception I can still think of is doing a <code>git checkout</code> and losing uncommitted changes).</p>
+
+<p>Here&#39;s the situation I&#39;ve found myself in countless times: I merged a branch, went through a bunch of hassle fixing conflicts, only to realize after I committed the merge that I had either merged the wrong branch, or had resolved conflicts the wrong way. This is actually not the end of the world. It&#39;s fairly straightforward to fix. Just find the last commit before the merge, and hard-reset the branch back to there:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>git log --pretty<span class="o">=</span>oneline --decorate --abbrev-commit --graph --branches<span class="o">=</span><span class="s2">"*"</span>
+<span class="k">*</span>   6fd8675 <span class="o">(</span>HEAD, master<span class="o">)</span> Merge branch <span class="s1">'feature'</span>
+|<span class="se">\</span>
+| <span class="k">*</span> d92be50 <span class="o">(</span>feature<span class="o">)</span> Implement feature.
+<span class="k">*</span> | c9a4be4 Another change.
+|/
+<span class="k">*</span> f446a62 add another line
+<span class="k">*</span> 2601cd0 Initial commit.
+<span class="gp">$ </span>git reset --hard HEAD~1
+<span class="gp">$ </span>git log --pretty<span class="o">=</span>oneline --decorate --abbrev-commit --graph --branches<span class="o">=</span><span class="s2">"*"</span>
+<span class="k">*</span> c9a4be4 <span class="o">(</span>HEAD, master<span class="o">)</span> Another change.
+| <span class="k">*</span> d92be50 <span class="o">(</span>feature<span class="o">)</span> Implement feature.
+|/
+<span class="k">*</span> f446a62 add another line
+<span class="k">*</span> 2601cd0 Initial commit.
+</code></pre></div>
+
+<p>Okay, so <code>git reset --hard HEAD~1</code> isn&#39;t exactly intuitive, but we undid the merge easily enough. However, what if you finished a rebase?</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>git checkout feature
+<span class="gp">$ </span>git rebase master
+First, rewinding head to replay your work on top of it...
+Applying: Implement feature.
+<span class="gp">$ </span>git log --pretty<span class="o">=</span>oneline --decorate --abbrev-commit --graph --branches<span class="o">=</span><span class="s2">"*"</span>
+<span class="k">*</span> 1df1f0f <span class="o">(</span>HEAD, feature<span class="o">)</span> Implement feature.
+<span class="k">*</span> c9a4be4 <span class="o">(</span>master<span class="o">)</span> Another change.
+<span class="k">*</span> f446a62 add another line
+<span class="k">*</span> 2601cd0 Initial commit.
+</code></pre></div>
+
+<p>It&#39;s not clear how to get that &quot;feature&quot; branch back, to undo all those new commits. The problem is we&#39;ve lost our way to refer to the state of the branch before the rebase. The beauty of Git, however, is that those commits are not actually lost. The way to go back and find them is called the &quot;reflog&quot;.</p>
+
+<p>Every state your repo has ever been in is saved (at least for some time) in some shape or form. Usually we assign good names for these states, such as branches, or tags, or we refer to them by the commit which most recently modified them. However, even when git is making changes to branches based on some command, such as <code>rebase</code> or <code>merge</code>, it saves that state as well. These states, though no longer part of the branch, are accessible via the <code>reflog</code>.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>git reflog
+1df1f0f HEAD@<span class="o">{</span>0<span class="o">}</span>: rebase finished: returning to refs/heads/feature
+1df1f0f HEAD@<span class="o">{</span>1<span class="o">}</span>: rebase: Implement feature.
+c9a4be4 HEAD@<span class="o">{</span>2<span class="o">}</span>: rebase: checkout master
+d92be50 HEAD@<span class="o">{</span>3<span class="o">}</span>: checkout: moving from master to feature
+c9a4be4 HEAD@<span class="o">{</span>4<span class="o">}</span>: reset: moving to HEAD~1
+6fd8675 HEAD@<span class="o">{</span>5<span class="o">}</span>: merge feature: Merge made by the <span class="s1">'recursive'</span> strategy.
+c9a4be4 HEAD@<span class="o">{</span>6<span class="o">}</span>: commit: Another change.
+f446a62 HEAD@<span class="o">{</span>7<span class="o">}</span>: reset: moving to HEAD~1
+d92be50 HEAD@<span class="o">{</span>8<span class="o">}</span>: checkout: moving from master to master
+d92be50 HEAD@<span class="o">{</span>9<span class="o">}</span>: merge feature: Fast-forward
+f446a62 HEAD@<span class="o">{</span>10<span class="o">}</span>: checkout: moving from feature to master
+d92be50 HEAD@<span class="o">{</span>11<span class="o">}</span>: commit: Implement feature.
+f446a62 HEAD@<span class="o">{</span>12<span class="o">}</span>: checkout: moving from master to feature
+f446a62 HEAD@<span class="o">{</span>13<span class="o">}</span>: commit: add another line
+2601cd0 HEAD@<span class="o">{</span>14<span class="o">}</span>: commit <span class="o">(</span>amend<span class="o">)</span>: Initial commit.
+fa8ba5f HEAD@<span class="o">{</span>15<span class="o">}</span>: commit <span class="o">(</span>initial<span class="o">)</span>: <span class="nb">test</span>
+</code></pre></div>
+
+<p>Now we can see all of the operations that have been applied, including the rebase that I just did and want to undo (and even an additional &quot;reset&quot; I did after accidentally doing a fast-forward merge when setting up this situation).</p>
+
+<p>To back up to before the bad rebase, all I have to do is find the SHA of the step I want to go back to (<code>d92be50</code>), and do a <code>reset</code>:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>git reset --hard d92be50
+HEAD is now at d92be50 Implement feature.
+<span class="gp">$ </span>git log --pretty<span class="o">=</span>oneline --decorate --abbrev-commit --graph --branches<span class="o">=</span><span class="s2">"*"</span>
+<span class="k">*</span> c9a4be4 <span class="o">(</span>HEAD, master<span class="o">)</span> Another change.
+| <span class="k">*</span> d92be50 <span class="o">(</span>feature<span class="o">)</span> Implement feature.
+|/
+<span class="k">*</span> f446a62 add another line
+<span class="k">*</span> 2601cd0 Initial commit.
+</code></pre></div>
+
+<p>This puts us back to where we were before the rebase, and if you check the reflog again, you&#39;ll see that we didn&#39;t even lose the failed rebase: it&#39;s all there in the history:</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>git reflog
+d92be50 HEAD@<span class="o">{</span>0<span class="o">}</span>: reset: moving to d92be50
+1df1f0f HEAD@<span class="o">{</span>1<span class="o">}</span>: rebase finished: returning to refs/heads/feature
+1df1f0f HEAD@<span class="o">{</span>2<span class="o">}</span>: rebase: Implement feature.
+c9a4be4 HEAD@<span class="o">{</span>3<span class="o">}</span>: rebase: checkout master
+d92be50 HEAD@<span class="o">{</span>4<span class="o">}</span>: checkout: moving from master to feature
+</code></pre></div>
+
+<p>I hope this has helped reassure you that even when all seems lost, if you&#39;re using Git, there&#39;s probably a way out.</p>
+
+<h2 id="bonus-tip-legit">Bonus tip: Legit</h2>
+
+<p>If you have ever made a commit message: &quot;commit to merge&quot;, then this tip is for you.</p>
+
+<p>The tool is called <a href="http://www.git-legit.org">Legit</a>. Legit adds some useful new commands that do things for you to help you avoid getting into situations like what I just described.</p>
+
+<p>My favorite, which helps avoid the &quot;commit to merge&quot; situation, is <code>legit sync</code>, which does what the <code>Github for Mac</code> app does on &quot;sync&quot;: stash any changes you&#39;ve made, pull the latest (and rebase if the commits you have locally haven&#39;t been pushed), push your changes, and finally unstash your uncommitted changes.</p>
+
+</div>
+
+
+          <div class="footer">
+            <p>Brandon Holt &#8212; <a href="http://www.cs.washington.edu/">Computer Science &amp; Engineering</a> at the <a href="http://www.washington.edu/">University of Washington</a></p>
+          </div>
+        </div>
+
+      <!-- load javascript last -->
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//github.hubspot.com/tether/dist/js/tether.js"></script>
+      <script src="/~bholt/js/bootstrap.min.js"></script>
+
+      <!-- support retina -->
+      <script type="text/javascript" src="/~bholt/js/srcset-polyfill.js"></script>
+
+    </body>
+</html>
