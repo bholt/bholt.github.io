@@ -8,7 +8,16 @@
     <title>Brandon Holt</title>
     <link>http://homes.cs.washington.edu/~bholt/</link>
     <description>Potentially helpful tips and tricks I've learned or made up.</description>
-    <pubDate>Fri, 10 Jun 2016 00:00:00 -0700</pubDate>
+    <pubDate>Mon, 01 Aug 2016 00:00:00 -0700</pubDate>
+    <item>
+      <title>Socc Sosp</title>
+      <link>http://homes.cs.washington.edu/~bholt//posts/socc-sosp.html</link>
+      <description>&lt;p&gt;Our paper on &lt;a href=&quot;http://sampa.cs.washington.edu/projects/disciplined-inconsistency.html&quot;&gt;Disciplined Inconsistency&lt;/a&gt; will appear at &lt;a href=&quot;http://acmsocc.github.io/2016/&quot;&gt;SoCC 2016&lt;/a&gt; in October, and other work I&amp;#39;ve been involved in on the Diamond mobile/cloud data synchronization system will appear at &lt;a href=&quot;https://www.usenix.org/conference/osdi16&quot;&gt;OSDI 2016&lt;/a&gt;!&lt;/p&gt;
+</description>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 -0700</pubDate>
+      <guid>http://homes.cs.washington.edu/~bholt//posts/socc-sosp.html</guid>
+      <dc:date>2016-08-01T00:00:00-07:00</dc:date>
+    </item>
     <item>
       <title>Cse351 Sp16 Done</title>
       <link>http://homes.cs.washington.edu/~bholt//posts/cse351-sp16-done.html</link>
@@ -171,6 +180,6 @@
       <guid>http://homes.cs.washington.edu/~bholt//posts/building-llvm.html</guid>
       <dc:date>2014-01-29T00:00:00-08:00</dc:date>
     </item>
-    <dc:date>2016-06-10T00:00:00-07:00</dc:date>
+    <dc:date>2016-08-01T00:00:00-07:00</dc:date>
   </channel>
 </rss>
