@@ -8,7 +8,16 @@
     <title>Brandon Holt</title>
     <link>http://homes.cs.washington.edu/~bholt/</link>
     <description>Potentially helpful tips and tricks I've learned or made up.</description>
-    <pubDate>Wed, 17 Aug 2016 00:00:00 -0700</pubDate>
+    <pubDate>Mon, 10 Oct 2016 00:00:00 -0700</pubDate>
+    <item>
+      <title>Apple</title>
+      <link>http://homes.cs.washington.edu/~bholt//posts/apple.html</link>
+      <description>&lt;p&gt;I&amp;#39;m now a System Software Engineer at Apple, building tools to help engineers.&lt;/p&gt;
+</description>
+      <pubDate>Mon, 10 Oct 2016 00:00:00 -0700</pubDate>
+      <guid>http://homes.cs.washington.edu/~bholt//posts/apple.html</guid>
+      <dc:date>2016-10-10T00:00:00-07:00</dc:date>
+    </item>
     <item>
       <title>Graduation</title>
       <link>http://homes.cs.washington.edu/~bholt//posts/graduation.html</link>
@@ -189,6 +198,6 @@
       <guid>http://homes.cs.washington.edu/~bholt//posts/building-llvm.html</guid>
       <dc:date>2014-01-29T00:00:00-08:00</dc:date>
     </item>
-    <dc:date>2016-08-17T00:00:00-07:00</dc:date>
+    <dc:date>2016-10-10T00:00:00-07:00</dc:date>
   </channel>
 </rss>

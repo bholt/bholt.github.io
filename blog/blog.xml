@@ -4,12 +4,23 @@
 	<title type="text" xml:lang="en">Brandon Holt</title>
     <link type="application/atom+xml" href="http://homes.cs.washington.edu/~bholt//blog/blog.xml" rel="self"/>
     <link href="http://homes.cs.washington.edu/~bholt//"/>
-	<updated>2016-10-22T18:19:53-07:00</updated>
+	<updated>2016-10-22T18:27:15-07:00</updated>
     <id>http://homes.cs.washington.edu/~bholt//</id>
 	<author>
 		<name>the Sampa group</name>
 	</author>
 	
+	
+	<entry>
+        
+            <title>10 October 2016</title>
+            <link href="http://homes.cs.washington.edu/~bholt//blog/"/>
+        
+		<updated>2016-10-10T00:00:00-07:00</updated>
+        <id>http://homes.cs.washington.edu/~bholt//posts/apple.html</id>
+		<content type="html">&lt;p&gt;I&amp;#39;m now a System Software Engineer at Apple, building tools to help engineers.&lt;/p&gt;
+</content>
+	</entry>
 	
 	<entry>
         
