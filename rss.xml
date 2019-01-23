@@ -85,10 +85,9 @@
       <title>Disciplined Inconsistency</title>
       <link>http://homes.cs.washington.edu/~bholt//posts/disciplined-inconsistency.html</link>
       <description>
-&lt;div class=&quot;body madoko&quot; style=&quot;line-adjust:0&quot;&gt;
 
 &lt;p class=&quot;p noindent&quot; data-line=&quot;21&quot;&gt;&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;In order scale services with tight latency (and throughput) requirements, distributed systems programmers are forced to accept stale or inconsistent data. Typically this means using an eventually consistent data store like&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;&amp;nbsp;&lt;a href=&quot;http://aws.amazon.com/dynamodb/&quot; data-linkid=&quot;dynamodb&quot;&gt;DynamoDB&lt;/a&gt;&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;,&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;&amp;nbsp;&lt;a href=&quot;https://www.mongodb.org/&quot; data-linkid=&quot;mongodb&quot;&gt;MongoDB&lt;/a&gt;&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;, or&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;&amp;nbsp;&lt;a href=&quot;http://basho.com/riak&quot; data-linkid=&quot;riak&quot;&gt;Riak&lt;/a&gt;&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;. With this weaker consistency model, it&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;s hard to know when writes will become visible to others, or what state of the world you&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;&amp;#39;&lt;span data-line=&quot;21&quot;&gt;&lt;/span&gt;re going to get when you read.
-&lt;/p&gt;&lt;span data-line=&quot;&quot;&gt;&lt;/span&gt;&lt;/div&gt;</description>
+&lt;/p&gt;&lt;span data-line=&quot;&quot;&gt;&lt;/span&gt;</description>
       <pubDate>Sun, 03 May 2015 00:00:00 -0700</pubDate>
       <guid>http://homes.cs.washington.edu/~bholt//posts/disciplined-inconsistency.html</guid>
       <dc:date>2015-05-03T00:00:00-07:00</dc:date>

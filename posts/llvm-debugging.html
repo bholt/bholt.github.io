@@ -221,6 +221,11 @@ Running '/usr/local/bin/dot' program...  done.
 <span class="n">StringRef</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">loc</span><span class="p">.</span><span class="n">getDirectory</span><span class="p">();</span>
 <span class="n">errs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">inst</span> <span class="o">&lt;&lt;</span>  <span class="s">" ; file: "</span> <span class="o">&lt;&lt;</span> <span class="n">file</span> <span class="o">&lt;&lt;</span> <span class="s">", line: "</span> <span class="o">&lt;&lt;</span> <span class="n">line</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
 </code></pre></div>
+<blockquote>
+<p><strong>Update:</strong> The way to get location information has become simpler in newer versions of LLVM:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">DILocation *loc = inst-&gt;getDebugLoc();
+</code></pre></div></blockquote>
+
 <p>If you go ahead and try this, odds are good your first run will look something like this:</p>
 <div class="highlight"><pre><code class="language-llvm" data-lang="llvm"><span class="err">$</span> <span class="k">c</span><span class="err">lang</span> <span class="err">-X</span><span class="k">c</span><span class="err">lang</span> <span class="err">-</span><span class="k">load</span> <span class="err">-X</span><span class="k">c</span><span class="err">lang</span> <span class="err">skele</span><span class="k">to</span><span class="err">n/libSkele</span><span class="k">to</span><span class="err">nPass</span><span class="p">.</span><span class="err">so</span> <span class="err">~/s</span><span class="k">c</span><span class="err">rat</span><span class="k">c</span><span class="err">h/test</span><span class="p">.</span><span class="k">c</span>
 <span class="nl">Function:</span> <span class="err">main</span>
