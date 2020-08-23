@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Brandon Holt / Home</title>
+
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@holtbg">
+        <meta name="twitter:creator" content="@holtbg">
+        <meta name="twitter:title" content="Home">
+        <meta name="twitter:description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/css/video-js.min.css" rel="stylesheet">
+        <link href="/css/videojs-vr.css" rel="stylesheet">
+
+        <link href="/css/madoko.css" rel="stylesheet">
+        <link href="/css/theme.css" rel="stylesheet">
+        <link href="/css/syntax.css" rel="stylesheet">
+
+    </head>
+    <body>
+      <div class="container">
+        <video
+          id="my-player"
+          class="video-js"
+          controls
+          preload="auto"
+          poster="/img/hg-poster.jpg"
+        >
+          <source src="//github.com/bholt/bholt.github.io/releases/download/v0.0.1/1.mp4" type="video/mp4"></source>
+        </video>
+      </div>
+      <script src="/js/video.min.js"></script>
+      <script src="/js/videojs-vr.min.js"></script>
+      <script>
+        var player = videojs('my-player');
+        player.vr({projection: '360'});
+      </script>
+    </body>
+</html>
