@@ -2,7 +2,7 @@
 source "https://rubygems.org"
 
 # gem 'jekyll', '~>2.3' #, '>=3.0.0.beta'
-gem 'jekyll', '~>3.0.0.beta'
+gem 'jekyll', '~>3.6.3'
 gem 'jekyll-compose'
 gem 'redcarpet'
 gem 'rouge'
